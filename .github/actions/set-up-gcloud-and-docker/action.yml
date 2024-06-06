@@ -1,0 +1,26 @@
+---
+name: set-up-gcloud-and-docker
+inputs:
+  google-credentials:
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ inputs.google-credentials }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    - name: 'Configure gcloud and docker for europe-west3'
+      run: gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
+      shell: bash
+    - name: 'Configure gcloud and docker for europe-west1'
+      run: gcloud auth configure-docker europe-west1-docker.pkg.dev --quiet
+      shell: bash
+    - name: 'Configure gcloud and docker for europe-west8'
+      run: gcloud auth configure-docker europe-west8-docker.pkg.dev --quiet
+      shell: bash
