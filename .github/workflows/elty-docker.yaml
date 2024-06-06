@@ -7,12 +7,13 @@ on:
     branches:
       - main_elty
       - staging
+      - feature-sc-62683-formbricks-github-workflow-for-create-and # Temp add for testing purposes
   pull_request:
     branches:
       - feature-sc-*
       - master
       - staging
-      - feature-sc-62683-formbricks-github-workflow-for-create-and # Temp add for testing purposes
+      
   release:
     types: [released]
 
