@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
     name: formbricks
-    runs-on: github-action-runner-scale-set-docker
+    runs-on: ubuntu-latest
     outputs:
       DOCKER_TAG: ${{ steps.extract_branch.outputs.DOCKER_TAG }}
     steps:
