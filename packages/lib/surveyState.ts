@@ -85,7 +85,7 @@ export class SurveyState {
     window.parent.postMessage(
       {
         type: "SurveyState.accumulateResponse",
-        data: { responseId: this.responseId, response: this.responseAcc },
+        data: { responseId: this.responseId, responses: this.responseAcc },
       },
       "*"
     );
