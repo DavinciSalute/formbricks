@@ -1,5 +1,4 @@
 import { responses } from "@/app/lib/api/response";
-
 import { getUploadSignedUrl } from "@formbricks/lib/storage/service";
 
 export const getSignedUrlForPublicFile = async (
@@ -14,10 +13,15 @@ export const getSignedUrlForPublicFile = async (
   try {
     const signedUrlResponse = await getUploadSignedUrl(fileName, environmentId, fileType, accessType);
 
+    console.log(`getSignedUrlForPublicFile OK:${JSON.stringify(signedUrlResponse)}`);
+
     return responses.successResponse({
       ...signedUrlResponse,
     });
   } catch (err) {
+    console.log("getSignedUrlForPublicFile error");
+    console.log(err);
+    console.log(JSON.stringify(err));
     return responses.internalServerErrorResponse("Internal server error");
   }
 };

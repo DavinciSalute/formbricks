@@ -1,5 +1,4 @@
 import "server-only";
-
 import { env } from "./env";
 
 export const MOLECULER_MICROSERVICE_CLIENT_NAME = env.MOLECULER_MICROSERVICE_CLIENT_NAME;
@@ -103,6 +102,7 @@ export const MAX_SIZES = {
 
 // Function to check if the necessary S3 configuration is set up
 export const isS3Configured = () => {
+  console.log("isS3Configured", !!S3_BUCKET_NAME);
   // This function checks if the S3 bucket name environment variable is defined.
   // The AWS SDK automatically resolves credentials through a chain,
   // so we do not need to explicitly check for AWS credentials like access key, secret key, or region.

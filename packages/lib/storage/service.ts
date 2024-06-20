@@ -13,9 +13,7 @@ import { randomUUID } from "crypto";
 import { access, mkdir, readFile, rmdir, unlink, writeFile } from "fs/promises";
 import { lookup } from "mime-types";
 import path, { join } from "path";
-
 import { TAccessType } from "@formbricks/types/storage";
-
 import {
   MAX_SIZES,
   S3_ACCESS_KEY,
@@ -40,12 +38,19 @@ export const getS3Client = () => {
         ? { accessKeyId: S3_ACCESS_KEY, secretAccessKey: S3_SECRET_KEY }
         : undefined;
 
+    console.log(
+      `getS3Client create with cred:${JSON.stringify(credentials)} S3_ACCESS_KEY: ${S3_ACCESS_KEY} S3_SECRET_KEY:${S3_SECRET_KEY}`,
+      credentials
+    );
+
     s3ClientInstance = new S3Client({
       credentials,
       region: S3_REGION,
       ...(S3_ENDPOINT_URL && { endpoint: S3_ENDPOINT_URL }),
     });
   }
+
+  console.log(`getS3Client use s3ClientInstance `);
 
   return s3ClientInstance;
 };
@@ -155,6 +160,10 @@ export const getUploadSignedUrl = async (
 ): Promise<TGetSignedUrlResponse> => {
   // add a unique id to the file name
 
+  console.log(
+    `getUploadSignedUrl for file:${JSON.stringify({ fileName, environmentId, fileType, accessType, plan }, null, 2)} `
+  );
+
   const fileExtension = fileName.split(".").pop();
   const fileNameWithoutExtension = fileName.split(".").slice(0, -1).join(".");
 
@@ -166,8 +175,11 @@ export const getUploadSignedUrl = async (
 
   // handle the local storage case first
   if (!isS3Configured()) {
+    console.log(`!isS3Configured() use LOCALSTORAGE`);
     try {
       const { signature, timestamp, uuid } = generateLocalSignedUrl(updatedFileName, environmentId, fileType);
+
+      console.log(`generateLocalSignedUrl: ${JSON.stringify({ signature, timestamp, uuid }, null, 2)}`);
 
       return {
         signedUrl:
@@ -183,11 +195,14 @@ export const getUploadSignedUrl = async (
         fileUrl: new URL(`${WEBAPP_URL}/storage/${environmentId}/${accessType}/${updatedFileName}`).href,
       };
     } catch (err) {
+      console.log(`generateLocalSignedUrl error: ${JSON.stringify(err, null, 2)}`);
+
       throw err;
     }
   }
 
   try {
+    console.log(`isS3Configured() use S3`);
     const { presignedFields, signedUrl } = await getS3UploadSignedUrl(
       updatedFileName,
       fileType,
@@ -197,12 +212,16 @@ export const getUploadSignedUrl = async (
       plan
     );
 
+    console.log(`getS3UploadSignedUrl  ${JSON.stringify({ presignedFields, signedUrl }, null, 2)}`);
+
     return {
       signedUrl,
       presignedFields,
       fileUrl: new URL(`${WEBAPP_URL}/storage/${environmentId}/${accessType}/${updatedFileName}`).href,
     };
   } catch (err) {
+    console.log(`getS3UploadSignedUrl error: ${JSON.stringify(err, null, 2)}`);
+
     throw err;
   }
 };
