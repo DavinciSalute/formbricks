@@ -132,16 +132,6 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     const callbackUrl =
       request.nextUrl.searchParams.get("callbackUrl") ?? stripUrlParameters(currentUrl, ["token"]);
 
-    if (token) {
-      // todo: scoprire perche il redirect da problemi dentro l'iframe
-      // console.log("### Admin-iframe already logged");
-      // if (currentUrl !== callbackUrl && request.method !== 'POST'){
-      //   console.log("redirect to callbackUrl");
-      //   return NextResponse.redirect(callbackUrl)
-      // }
-      return;
-    }
-
     if (!iframeAuthToken) {
       return NextResponse.json({ error: "Missing iframeAuth token" }, { status: 500 });
     }
@@ -194,7 +184,7 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     // il cookie "next-auth.callback-url" con la sessione attiva manda in errore. rimuovo
     requiredCookies = requiredCookies.filter((cookie) => cookie.name !== "next-auth.callback-url");
 
-    // const response = NextResponse.redirect(callbackUrl);
+    // todo: scoprire perché se tento di ritornare  `const response = NextResponse.redirect(callbackUrl);` mi da problemi dentro l'iframe
     const response = NextResponse.next();
 
     requiredCookies.map((c) => {
@@ -205,9 +195,9 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
       response.cookies.set({
         name,
         value,
-        // httpOnly:true,
-        // ...options
-        // secure:options.secure
+        expires: options.expires,
+        path: options.path,
+        httpOnly: options.httpOnly,
         sameSite: "none",
         secure: true,
       });
