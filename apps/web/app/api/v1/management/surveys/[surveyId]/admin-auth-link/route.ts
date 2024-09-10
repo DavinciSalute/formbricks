@@ -60,11 +60,13 @@ export const POST = async (
 
     const authToken = createToken(user.id, user.email);
     const iframeEditUrl = `${WEBAPP_URL}/admin-iframe/${apiKeyData.environmentId}/surveys/${survey.id}/edit?token=${encodeURIComponent(authToken)}`;
+    const iframePreviewUrl = `${WEBAPP_URL}/admin-iframe/${apiKeyData.environmentId}/surveys/${survey.id}/preview?token=${encodeURIComponent(authToken)}`;
     const iframeSummaryUrl = `${WEBAPP_URL}/admin-iframe/${apiKeyData.environmentId}/surveys/${survey.id}/summary?token=${encodeURIComponent(authToken)}`;
 
     const data = {
       iframeEditUrl,
       iframeSummaryUrl,
+      iframePreviewUrl,
     };
 
     return responses.successResponse(data);

@@ -36,6 +36,7 @@ interface SurveyEditorProps {
   isUnsplashConfigured: boolean;
   hideSurveyMenuBar?: boolean;
   hideQuestionsAudienceTabs?: boolean;
+  disableEditLogo?: boolean;
   surveyMenuBarProps?: {
     hideFormName?: boolean;
     hideBackButton?: boolean;
@@ -43,6 +44,12 @@ interface SurveyEditorProps {
     hideSaveAndClose?: boolean;
     hideContinueToSettings?: boolean;
     hidePublish?: boolean;
+  };
+  questionViewProps?: {
+    disableWelcomeCardEdit?: boolean;
+    disableTankyouCardEdit?: boolean;
+    disableHiddenFieldsEdit?: boolean;
+    disableMultilanguageEdit?: boolean;
   };
 }
 
@@ -63,6 +70,8 @@ export const SurveyEditor = ({
   hideSurveyMenuBar = false,
   hideQuestionsAudienceTabs = false,
   surveyMenuBarProps,
+  questionViewProps,
+  disableEditLogo,
 }: SurveyEditorProps) => {
   const [activeView, setActiveView] = useState<TSurveyEditorTabs>("questions");
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
@@ -180,6 +189,7 @@ export const SurveyEditor = ({
                 isMultiLanguageAllowed={isMultiLanguageAllowed}
                 isFormbricksCloud={isFormbricksCloud}
                 attributeClasses={attributeClasses}
+                {...questionViewProps}
               />
             )}
 
@@ -225,6 +235,7 @@ export const SurveyEditor = ({
               }
               languageCode={selectedLanguageCode}
               onFileUpload={async (file) => file.name}
+              disableEditLogo={disableEditLogo}
             />
           </aside>
         </div>
