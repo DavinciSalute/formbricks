@@ -24,7 +24,8 @@ interface PreviewSurveyProps {
   product: TProduct;
   environment: TEnvironment;
   languageCode: string;
-  onFileUpload: (file: File, config?: TUploadFileConfig) => Promise<string>;
+  onFileUpload?: (file: File, config?: TUploadFileConfig) => Promise<string>;
+  disableEditLogo?: boolean;
 }
 
 let surveyNameTemp: string;
@@ -65,7 +66,8 @@ export const PreviewSurvey = ({
   product,
   environment,
   languageCode,
-  onFileUpload,
+  onFileUpload = async (file) => file.name,
+  disableEditLogo,
 }: PreviewSurveyProps) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isFullScreenPreview, setIsFullScreenPreview] = useState(false);
@@ -262,7 +264,12 @@ export const PreviewSurvey = ({
                 <div className="flex h-full w-full flex-col justify-end">
                   <div className="absolute left-5 top-5">
                     {!styling.isLogoHidden && (
-                      <ClientLogo environmentId={environment.id} product={product} previewSurvey />
+                      <ClientLogo
+                        environmentId={environment.id}
+                        product={product}
+                        previewSurvey
+                        disableEditLogo={disableEditLogo}
+                      />
                     )}
                   </div>
                   <div className=" z-10 w-full max-w-md rounded-lg border border-transparent">
@@ -347,7 +354,12 @@ export const PreviewSurvey = ({
               <MediaBackground survey={survey} product={product} ContentRef={ContentRef} isEditorView>
                 <div className="absolute left-5 top-5">
                   {!styling.isLogoHidden && (
-                    <ClientLogo environmentId={environment.id} product={product} previewSurvey />
+                    <ClientLogo
+                      environmentId={environment.id}
+                      product={product}
+                      previewSurvey
+                      disableEditLogo={disableEditLogo}
+                    />
                   )}
                 </div>
                 <div className="z-0 w-full max-w-md rounded-lg border-transparent">

@@ -43,6 +43,10 @@ interface QuestionsViewProps {
   isMultiLanguageAllowed?: boolean;
   isFormbricksCloud: boolean;
   attributeClasses: TAttributeClass[];
+  disableWelcomeCardEdit?: boolean;
+  disableTankyouCardEdit?: boolean;
+  disableHiddenFieldsEdit?: boolean;
+  disableMultilanguageEdit?: boolean;
 }
 
 export const QuestionsView = ({
@@ -58,6 +62,10 @@ export const QuestionsView = ({
   isMultiLanguageAllowed,
   isFormbricksCloud,
   attributeClasses,
+  disableWelcomeCardEdit,
+  disableTankyouCardEdit,
+  disableHiddenFieldsEdit,
+  disableMultilanguageEdit,
 }: QuestionsViewProps) => {
   const internalQuestionIdMap = useMemo(() => {
     return localSurvey.questions.reduce((acc, question) => {
@@ -336,18 +344,20 @@ export const QuestionsView = ({
 
   return (
     <div className="mt-16 px-5 py-4">
-      <div className="mb-5 flex flex-col gap-5">
-        <EditWelcomeCard
-          localSurvey={localSurvey}
-          setLocalSurvey={setLocalSurvey}
-          setActiveQuestionId={setActiveQuestionId}
-          activeQuestionId={activeQuestionId}
-          isInvalid={invalidQuestions ? invalidQuestions.includes("start") : false}
-          setSelectedLanguageCode={setSelectedLanguageCode}
-          selectedLanguageCode={selectedLanguageCode}
-          attributeClasses={attributeClasses}
-        />
-      </div>
+      {!disableWelcomeCardEdit && (
+        <div className="mb-5 flex flex-col gap-5">
+          <EditWelcomeCard
+            localSurvey={localSurvey}
+            setLocalSurvey={setLocalSurvey}
+            setActiveQuestionId={setActiveQuestionId}
+            activeQuestionId={activeQuestionId}
+            isInvalid={invalidQuestions ? invalidQuestions.includes("start") : false}
+            setSelectedLanguageCode={setSelectedLanguageCode}
+            selectedLanguageCode={selectedLanguageCode}
+            attributeClasses={attributeClasses}
+          />
+        </div>
+      )}
 
       <DndContext sensors={sensors} onDragEnd={onDragEnd} collisionDetection={closestCorners}>
         <QuestionsDroppable
@@ -370,34 +380,40 @@ export const QuestionsView = ({
 
       <AddQuestionButton addQuestion={addQuestion} product={product} />
       <div className="mt-5 flex flex-col gap-5">
-        <EditThankYouCard
-          localSurvey={localSurvey}
-          setLocalSurvey={setLocalSurvey}
-          setActiveQuestionId={setActiveQuestionId}
-          activeQuestionId={activeQuestionId}
-          isInvalid={invalidQuestions ? invalidQuestions.includes("end") : false}
-          setSelectedLanguageCode={setSelectedLanguageCode}
-          selectedLanguageCode={selectedLanguageCode}
-          attributeClasses={attributeClasses}
-        />
+        {!disableTankyouCardEdit && (
+          <EditThankYouCard
+            localSurvey={localSurvey}
+            setLocalSurvey={setLocalSurvey}
+            setActiveQuestionId={setActiveQuestionId}
+            activeQuestionId={activeQuestionId}
+            isInvalid={invalidQuestions ? invalidQuestions.includes("end") : false}
+            setSelectedLanguageCode={setSelectedLanguageCode}
+            selectedLanguageCode={selectedLanguageCode}
+            attributeClasses={attributeClasses}
+          />
+        )}
 
-        <HiddenFieldsCard
-          localSurvey={localSurvey}
-          setLocalSurvey={setLocalSurvey}
-          setActiveQuestionId={setActiveQuestionId}
-          activeQuestionId={activeQuestionId}
-        />
+        {!disableHiddenFieldsEdit && (
+          <HiddenFieldsCard
+            localSurvey={localSurvey}
+            setLocalSurvey={setLocalSurvey}
+            setActiveQuestionId={setActiveQuestionId}
+            activeQuestionId={activeQuestionId}
+          />
+        )}
 
-        <MultiLanguageCard
-          localSurvey={localSurvey}
-          product={product}
-          setLocalSurvey={setLocalSurvey}
-          setActiveQuestionId={setActiveQuestionId}
-          activeQuestionId={activeQuestionId}
-          isMultiLanguageAllowed={isMultiLanguageAllowed}
-          isFormbricksCloud={isFormbricksCloud}
-          setSelectedLanguageCode={setSelectedLanguageCode}
-        />
+        {!disableMultilanguageEdit && (
+          <MultiLanguageCard
+            localSurvey={localSurvey}
+            product={product}
+            setLocalSurvey={setLocalSurvey}
+            setActiveQuestionId={setActiveQuestionId}
+            activeQuestionId={activeQuestionId}
+            isMultiLanguageAllowed={isMultiLanguageAllowed}
+            isFormbricksCloud={isFormbricksCloud}
+            setSelectedLanguageCode={setSelectedLanguageCode}
+          />
+        )}
       </div>
     </div>
   );

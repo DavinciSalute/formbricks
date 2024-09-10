@@ -94,6 +94,13 @@ const Page = async ({ params }) => {
         hideFormName: true,
         hidePublish: true,
       }}
+      questionViewProps={{
+        disableWelcomeCardEdit: true,
+        disableTankyouCardEdit: true,
+        disableHiddenFieldsEdit: true,
+        disableMultilanguageEdit: true,
+      }}
+      disableEditLogo
     />
   );
 };
