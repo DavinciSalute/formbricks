@@ -182,7 +182,7 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     let requiredCookies: ResponseCookie[] = [...csrfResponseCookies, ...credentialsResponseCookies];
 
     // il cookie "next-auth.callback-url" con la sessione attiva manda in errore. rimuovo
-    requiredCookies = requiredCookies.filter((cookie) => cookie.name !== "next-auth.callback-url");
+    requiredCookies = requiredCookies.filter((cookie) => !cookie.name.includes("next-auth.callback-url"));
 
     // todo: scoprire perché se tento di ritornare  `const response = NextResponse.redirect(callbackUrl);` mi da problemi dentro l'iframe
     const response = NextResponse.next();
