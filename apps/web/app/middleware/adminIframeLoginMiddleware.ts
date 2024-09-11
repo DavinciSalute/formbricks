@@ -126,12 +126,12 @@ function stripUrlParameters(url: string, params: string[]) {
 }
 
 export const adminIframeMiddleware = async (request: NextRequest) => {
-  logger.log("------ start adminIframeMiddleware ----------");
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
   const token = await getToken({ req: request });
 
   if (request.nextUrl.pathname.startsWith("/admin-iframe")) {
+    logger.log("------ start adminIframeMiddleware ----------");
     const iframeAuthToken = request.nextUrl.searchParams.get("token");
 
     const currentUrl = WEBAPP_URL + request.nextUrl.pathname + request.nextUrl.search;
