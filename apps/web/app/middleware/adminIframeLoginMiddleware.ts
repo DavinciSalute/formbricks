@@ -121,6 +121,7 @@ function stripUrlParameters(url: string, params: string[]) {
 }
 
 export const adminIframeMiddleware = async (request: NextRequest) => {
+  console.log("------ start adminIframeMiddleware ----------");
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
   const token = await getToken({ req: request });
@@ -137,12 +138,16 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     }
 
     const csrfApiResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/csrf`);
+
     const csrfSetCookiesWithOptions = await csrfApiResponse.headers.getSetCookie();
+    console.log("csrfSetCookiesWithOptions:", csrfSetCookiesWithOptions);
     const setCookiesArray = [...csrfSetCookiesWithOptions];
     const setCookiesKeyValue = setCookiesArray
       .map((cookie) => cookie.split(";")[0]) // we only want the key value pair, not the options
       .join("; ");
+    console.log("setCookiesKeyValue:", setCookiesKeyValue);
     const csrfAuthToken: string = (await csrfApiResponse.json()).csrfToken;
+    console.log("csrfAuthToken:", csrfAuthToken);
 
     const credentialsResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/callback/iframe-token`, {
       headers: {
@@ -171,21 +176,29 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     }
 
     const credentialsResponseCookieHeader = credentialsResponse.headers.getSetCookie().join(",");
+    console.log("credentialsResponse.headers.getSetCookie():", credentialsResponse.headers.getSetCookie());
+    console.log("credentialsResponseCookieHeader:", credentialsResponseCookieHeader);
     const credentialsResponseCookies: ResponseCookie[] = credentialsResponseCookieHeader
       ? parseSetCookieHeader(credentialsResponseCookieHeader)
       : [];
+    console.log("credentialsResponseCookies:", credentialsResponseCookies);
 
     const csrfResponseCookies = csrfSetCookiesWithOptions
       ? parseSetCookieHeader(csrfSetCookiesWithOptions.join(","))
       : [];
+
+    console.log("csrfResponseCookies:", csrfResponseCookies);
 
     let requiredCookies: ResponseCookie[] = [...csrfResponseCookies, ...credentialsResponseCookies];
 
     // il cookie "next-auth.callback-url" | "__Secure-next-auth.callback-url" con la sessione attiva manda in errore. rimuovo
     requiredCookies = requiredCookies.filter((cookie) => !cookie.name.includes("next-auth.callback-url"));
 
+    console.log("requiredCookies:", requiredCookies);
     // todo: scoprire perché se tento di ritornare  `const response = NextResponse.redirect(callbackUrl);` mi da problemi dentro l'iframe
     const response = NextResponse.next();
+
+    console.log("response created!");
 
     requiredCookies.map((c) => {
       const { name, value, ...options } = c;
@@ -203,6 +216,7 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
       });
     });
 
+    console.log("requiredCookies applied");
     return response;
   }
 };

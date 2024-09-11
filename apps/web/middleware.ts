@@ -20,8 +20,12 @@ import type { NextRequest } from "next/server";
 import { RATE_LIMITING_DISABLED, WEBAPP_URL } from "@formbricks/lib/constants";
 
 export const middleware = async (request: NextRequest) => {
-  const iframeResponse = adminIframeMiddleware(request);
-  if (iframeResponse) return iframeResponse;
+  try {
+    const iframeResponse = adminIframeMiddleware(request);
+    if (iframeResponse) return iframeResponse;
+  } catch (error) {
+    console.error("Error adminIframeMiddleware", error.message);
+  }
 
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
