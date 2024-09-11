@@ -205,9 +205,7 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async jwt(data) {
-      console.log("callback.jwt", data);
-      const { token } = data;
+    async jwt({ token }) {
       const existingUser = await getUserByEmail(token?.email!);
 
       if (!existingUser) {
@@ -219,9 +217,7 @@ export const authOptions: NextAuthOptions = {
         profile: existingUser || null,
       };
     },
-    async session(data) {
-      console.log("callback.session", data);
-      const { session, token } = data;
+    async session({ session, token }) {
       // @ts-expect-error
       session.user.id = token?.id;
       // @ts-expect-error
@@ -229,9 +225,7 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
-    async signIn(data: any) {
-      console.log("callback.signIn", data);
-      const { user, account } = data;
+    async signIn({ user, account }: any) {
       if (account.provider === "iframe-token") {
         return true;
       }
