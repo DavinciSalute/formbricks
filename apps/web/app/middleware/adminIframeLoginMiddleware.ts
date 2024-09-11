@@ -135,7 +135,7 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
     logger.log("------ start adminIframeMiddleware ----------");
     const iframeAuthToken = request.nextUrl.searchParams.get("token");
     logger = logger.child({ iframeAuthToken });
-
+    logger.log("token:", iframeAuthToken);
     const currentUrl = WEBAPP_URL + request.nextUrl.pathname + request.nextUrl.search;
     const callbackUrl =
       request.nextUrl.searchParams.get("callbackUrl") ?? stripUrlParameters(currentUrl, ["token"]);
