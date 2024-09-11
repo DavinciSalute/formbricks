@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
 import { stringify } from "qs";
 import { WEBAPP_URL } from "@formbricks/lib/constants";
 
-const logger = getLogger({
+const baseLogger = getLogger({
   middleware: "adminIframeMiddleware",
 });
 
@@ -126,6 +126,7 @@ function stripUrlParameters(url: string, params: string[]) {
 }
 
 export const adminIframeMiddleware = async (request: NextRequest) => {
+  let logger = baseLogger.child({ pathname: request.nextUrl.pathname });
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
   const token = await getToken({ req: request });
@@ -133,6 +134,7 @@ export const adminIframeMiddleware = async (request: NextRequest) => {
   if (request.nextUrl.pathname.startsWith("/admin-iframe")) {
     logger.log("------ start adminIframeMiddleware ----------");
     const iframeAuthToken = request.nextUrl.searchParams.get("token");
+    logger = logger.child({ iframeAuthToken });
 
     const currentUrl = WEBAPP_URL + request.nextUrl.pathname + request.nextUrl.search;
     const callbackUrl =
