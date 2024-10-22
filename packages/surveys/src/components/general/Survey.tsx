@@ -121,6 +121,14 @@ export const Survey = ({
     }
   }, [getSetIsResponseSendingFinished]);
 
+  useEffect(() => {
+    if (questionId === "end" && isResponseSendingFinished) {
+      // Post a message to the parent window indicating that the survey is completed.
+      window.parent.postMessage("formbricksSurveyCompleted", "*");
+      onFinished();
+    }
+  }, [isResponseSendingFinished, onFinished, questionId]);
+
   const getNextQuestionId = useCallback(
     ({ startQuestionIndex }: { startQuestionIndex?: number }) => {
       // When startQuestionIndex is not set (the first time getNextQuestionId is called), initialize the cursor with currentQuestionIndex
@@ -165,11 +173,6 @@ export const Survey = ({
     const finished = nextQuestionId === "end";
     onChange(responseData);
     onResponse({ data: responseData, ttc, finished });
-    if (finished) {
-      // Post a message to the parent window indicating that the survey is completed.
-      window.parent.postMessage("formbricksSurveyCompleted", "*");
-      onFinished();
-    }
     setQuestionId(nextQuestionId);
     // add to history
     setHistory([...history, questionId]);
