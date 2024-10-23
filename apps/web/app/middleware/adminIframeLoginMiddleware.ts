@@ -1,9 +1,14 @@
 import { getToken } from "next-auth/jwt";
+import { getLogger } from "next-logger.config";
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { stringify } from "qs";
 import { WEBAPP_URL } from "@formbricks/lib/constants";
+
+const baseLogger = getLogger({
+  middleware: "adminIframeMiddleware",
+});
 
 function parseSetCookieHeader(setCookieHeader: string): ResponseCookie[] {
   // Lista dei possibili cookie presenti nella stringa
@@ -120,78 +125,86 @@ function stripUrlParameters(url: string, params: string[]) {
   return structuredUrl.toString();
 }
 
-export const adminIframeMiddleware = async (request: NextRequest) => {
+export const adminIframeMiddleware = async (req: NextRequest) => {
+  let logger = baseLogger.child({ pathname: req.nextUrl.pathname });
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
-  const token = await getToken({ req: request });
+  const token = await getToken({ req: req });
 
-  if (request.nextUrl.pathname.startsWith("/admin-iframe")) {
-    const iframeAuthToken = request.nextUrl.searchParams.get("token");
-
-    const currentUrl = WEBAPP_URL + request.nextUrl.pathname + request.nextUrl.search;
-    const callbackUrl =
-      request.nextUrl.searchParams.get("callbackUrl") ?? stripUrlParameters(currentUrl, ["token"]);
-
+  if (req.nextUrl.pathname.startsWith("/admin-iframe") && !token) {
+    const iframeAuthToken = req.nextUrl.searchParams.get("token");
     if (!iframeAuthToken) {
-      return NextResponse.json({ error: "Missing iframeAuth token" }, { status: 500 });
+      throw new Error("Missing iframe Auth token");
     }
 
-    const csrfApiResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/csrf`);
-    const csrfSetCookiesWithOptions = await csrfApiResponse.headers.getSetCookie();
-    const setCookiesArray = [...csrfSetCookiesWithOptions];
-    const setCookiesKeyValue = setCookiesArray
-      .map((cookie) => cookie.split(";")[0]) // we only want the key value pair, not the options
-      .join("; ");
-    const csrfAuthToken: string = (await csrfApiResponse.json()).csrfToken;
+    const currentUrl = WEBAPP_URL + req.nextUrl.pathname + req.nextUrl.search;
+    const callbackUrl =
+      req.nextUrl.searchParams.get("callbackUrl") ?? stripUrlParameters(currentUrl, ["token"]);
 
-    const credentialsResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/callback/iframe-token`, {
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-        cookie: setCookiesKeyValue,
-      },
-      body: stringify({
-        callbackUrl: callbackUrl,
-        token: iframeAuthToken,
-        redirect: "false",
-        csrfToken: csrfAuthToken,
-        json: true,
-      }),
-      method: "POST",
-    });
+    const [csrfSetCookiesHeaderValue, csrfAuthToken] = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/auth/csrf`
+    )
+      .then((response) => {
+        return Promise.all([response.headers.getSetCookie().join("; "), response.json()]);
+      })
+      .then(([csrfSetCookiesHeaderValue, jsonResponse]) => {
+        const csrfAuthToken = jsonResponse.csrfToken;
+        if (!csrfAuthToken || typeof csrfAuthToken !== "string") {
+          throw new Error("CSRF token is missing");
+        }
+        return [csrfSetCookiesHeaderValue, csrfAuthToken];
+      })
+      .catch((error) => {
+        logger.error("Failed to obtain CSRF cookie and token:", error);
+        throw new Error("Failed to obtain CSRF cookie and token: " + error.message);
+      });
 
-    if (credentialsResponse.status !== 200) {
-      return NextResponse.json(
-        {
-          error: "Failed to authenticate sign in attempt",
-          responseStatus: credentialsResponse.status,
-          text: await credentialsResponse.text(),
+    const credentialsResponseCookieHeader = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/auth/callback/iframe-token`,
+      {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+          cookie: csrfSetCookiesHeaderValue,
         },
-        { status: 500 }
-      );
-    }
+        body: stringify({
+          callbackUrl: callbackUrl,
+          token: iframeAuthToken,
+          redirect: "false",
+          csrfToken: csrfAuthToken,
+          json: true,
+        }),
+        method: "POST",
+      }
+    )
+      .then((response) => {
+        if (response.status !== 200) throw new Error(`Received response status ${response.status}`);
+        return response.json().then(() => response);
+      })
+      .then((response) => {
+        return response.headers.getSetCookie().join(",");
+      })
+      .catch((error) => {
+        logger.error("Failed to authenticate sign in attempt:", error);
+        throw new Error("Failed to authenticate sign in attempt: " + error.message);
+      });
 
-    const credentialsResponseCookieHeader = credentialsResponse.headers.getSetCookie().join(",");
-    const credentialsResponseCookies: ResponseCookie[] = credentialsResponseCookieHeader
-      ? parseSetCookieHeader(credentialsResponseCookieHeader)
-      : [];
-
-    const csrfResponseCookies = csrfSetCookiesWithOptions
-      ? parseSetCookieHeader(csrfSetCookiesWithOptions.join(","))
-      : [];
-
-    let requiredCookies: ResponseCookie[] = [...csrfResponseCookies, ...credentialsResponseCookies];
+    const credentialsResponseCookies = parseSetCookieHeader(credentialsResponseCookieHeader);
+    const csrfResponseCookies = parseSetCookieHeader(csrfSetCookiesHeaderValue);
 
     // il cookie "next-auth.callback-url" | "__Secure-next-auth.callback-url" con la sessione attiva manda in errore. rimuovo
-    requiredCookies = requiredCookies.filter((cookie) => !cookie.name.includes("next-auth.callback-url"));
+    let requiredCookies = [...csrfResponseCookies, ...credentialsResponseCookies].filter(
+      (cookie) => !cookie.name.includes("next-auth.callback-url")
+    );
+    if (requiredCookies.length < 2) {
+      logger.error("We have not collected enough cookies to ensure login");
+      throw new Error("We have not collected enough cookies to ensure login");
+    }
 
     // todo: scoprire perché se tento di ritornare  `const response = NextResponse.redirect(callbackUrl);` mi da problemi dentro l'iframe
     const response = NextResponse.next();
+    // const response = NextResponse.redirect(callbackUrl);;
 
-    requiredCookies.map((c) => {
-      const { name, value, ...options } = c;
-      if (response.cookies.has(name)) {
-        response.cookies.delete(name);
-      }
+    requiredCookies.forEach(({ name, value, ...options }) => {
       response.cookies.set({
         name,
         value,

@@ -15,13 +15,27 @@ import {
   signupRoute,
 } from "@/app/middleware/endpointValidator";
 import { getToken } from "next-auth/jwt";
+import { getLogger } from "next-logger.config";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 import { RATE_LIMITING_DISABLED, WEBAPP_URL } from "@formbricks/lib/constants";
 
+const logger = getLogger();
+
 export const middleware = async (request: NextRequest) => {
-  const iframeResponse = adminIframeMiddleware(request);
-  if (iframeResponse) return iframeResponse;
+  try {
+    const iframeResponse = await adminIframeMiddleware(request);
+    if (iframeResponse) return iframeResponse;
+  } catch (error) {
+    logger.error("Error adminIframeMiddleware", error.message);
+    return NextResponse.json(
+      {
+        error: error.message,
+        middleware: "adminIframeMiddleware",
+      },
+      { status: 500 }
+    );
+  }
 
   // issue with next auth types & Next 15; let's review when new fixes are available
   // @ts-expect-error
