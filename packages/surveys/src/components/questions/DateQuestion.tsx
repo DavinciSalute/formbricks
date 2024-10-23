@@ -8,12 +8,10 @@ import { getUpdatedTtc, useTtc } from "@/lib/ttc";
 import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import DatePicker from "react-date-picker";
-
 import { getLocalizedValue } from "@formbricks/lib/i18n/utils";
 import { getMonthName, getOrdinalDate } from "@formbricks/lib/utils/datetime";
 import { TResponseData, TResponseTtc } from "@formbricks/types/responses";
 import type { TSurveyDateQuestion } from "@formbricks/types/surveys";
-
 import "../../styles/date-picker.css";
 
 interface DateQuestionProps {
@@ -96,8 +94,14 @@ export const DateQuestion = ({
   useTtc(question.id, ttc, setTtc, startTime, setStartTime, question.id === currentQuestionId);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(value ? new Date(value) : undefined);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [hideInvalid, setHideInvalid] = useState(!selectedDate);
+
+  useEffect(() => {
+    if (value && !selectedDate) {
+      setSelectedDate(new Date(value));
+    }
+  }, [selectedDate, value]);
 
   useEffect(() => {
     if (datePickerOpen) {

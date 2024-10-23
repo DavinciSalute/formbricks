@@ -70,13 +70,14 @@ export const Survey = ({
   const currentQuestionIndex = survey.questions.findIndex((q) => q.id === questionId);
   const currentQuestion = useMemo(() => {
     if (questionId === "end" && !survey.thankYouCard.enabled) {
-      const newHistory = [...history];
-      const prevQuestionId = newHistory.pop();
-      return survey.questions.find((q) => q.id === prevQuestionId);
+      return undefined;
+      // const newHistory = [...history];
+      // const prevQuestionId = newHistory.pop();
+      // return survey.questions.find((q) => q.id === prevQuestionId);
     } else {
       return survey.questions.find((q) => q.id === questionId);
     }
-  }, [questionId, survey, history]);
+  }, [questionId, survey]);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const showProgressBar = !styling.hideProgressBar;
   const getShowSurveyCloseButton = (offset: number) => {

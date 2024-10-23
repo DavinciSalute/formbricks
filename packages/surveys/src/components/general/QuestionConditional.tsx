@@ -11,6 +11,7 @@ import { NPSQuestion } from "@/components/questions/NPSQuestion";
 import { OpenTextQuestion } from "@/components/questions/OpenTextQuestion";
 import { PictureSelectionQuestion } from "@/components/questions/PictureSelectionQuestion";
 import { RatingQuestion } from "@/components/questions/RatingQuestion";
+import { useEffect } from "preact/hooks";
 import { TResponseData, TResponseDataValue, TResponseTtc } from "@formbricks/types/responses";
 import { TUploadFileConfig } from "@formbricks/types/storage";
 import { TSurveyQuestion, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys";
@@ -52,13 +53,15 @@ export const QuestionConditional = ({
   isInIframe,
   currentQuestionId,
 }: QuestionConditionalProps) => {
-  if (!value && prefilledQuestionValue) {
-    if (skipPrefilled) {
-      onSubmit({ [question.id]: prefilledQuestionValue }, { [question.id]: 0 });
-    } else {
-      onChange({ [question.id]: prefilledQuestionValue });
+  useEffect(() => {
+    if (!value && prefilledQuestionValue) {
+      if (skipPrefilled) {
+        onSubmit({ [question.id]: prefilledQuestionValue }, { [question.id]: 0 });
+      } else {
+        onChange({ [question.id]: prefilledQuestionValue });
+      }
     }
-  }
+  }, [onChange, onSubmit, prefilledQuestionValue, question.id, skipPrefilled, value]);
 
   return question.type === TSurveyQuestionTypeEnum.OpenText ? (
     <OpenTextQuestion
