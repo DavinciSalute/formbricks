@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { TProductStyling } from "@formbricks/types/product";
 import { TCardArrangementOptions } from "@formbricks/types/styling";
 import { TSurvey, TSurveyStyling } from "@formbricks/types/surveys";
@@ -39,6 +39,7 @@ export const StackedCardsContainer = ({
 
   const questionIdxTemp = useMemo(() => {
     if (currentQuestionId === "start") return survey.welcomeCard.enabled ? -1 : 0;
+    if (currentQuestionId === "end") return survey.questions.length;
     if (currentQuestionId === "end") return survey.thankYouCard.enabled ? survey.questions.length : 0;
     return survey.questions.findIndex((question) => question.id === currentQuestionId);
   }, [currentQuestionId, survey.welcomeCard.enabled, survey.thankYouCard.enabled, survey.questions]);
@@ -103,15 +104,18 @@ export const StackedCardsContainer = ({
     };
   }, [cardArrangement, hovered, cardWidth]);
 
-  const straightCardArrangementStyles = (offset: number) => {
-    if (cardArrangement === "straight") {
-      // styles to set the descending width of stacked question cards when card arrangement is set to straight
-      return {
-        width: `${100 - 5 * offset >= 100 ? 100 : 100 - 5 * offset}%`,
-        margin: "auto",
-      };
-    }
-  };
+  const straightCardArrangementStyles = useCallback(
+    (offset: number) => {
+      if (cardArrangement === "straight") {
+        // styles to set the descending width of stacked question cards when card arrangement is set to straight
+        return {
+          width: `${100 - 5 * offset >= 100 ? 100 : 100 - 5 * offset}%`,
+          margin: "auto",
+        };
+      }
+    },
+    [cardArrangement]
+  );
 
   // UseEffect to handle the resize of current question card and set cardHeight accordingly
   useEffect(() => {
@@ -174,11 +178,9 @@ export const StackedCardsContainer = ({
         [prevQuestionIdx, currentQuestionIdx, nextQuestionIdx, nextQuestionIdx + 1].map(
           (questionIdxTemp, index) => {
             //Check for hiding extra card
-            if (survey.thankYouCard.enabled) {
-              if (questionIdxTemp > survey.questions.length) return;
-            } else {
-              if (questionIdxTemp > survey.questions.length - 1) return;
-            }
+
+            if (questionIdxTemp > survey.questions.length) return;
+            if (questionIdxTemp < 0) return;
             const offset = index - 1;
             const isHidden = offset < 0;
             return (

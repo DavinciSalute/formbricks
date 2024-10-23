@@ -70,13 +70,14 @@ export const Survey = ({
   const currentQuestionIndex = survey.questions.findIndex((q) => q.id === questionId);
   const currentQuestion = useMemo(() => {
     if (questionId === "end" && !survey.thankYouCard.enabled) {
-      const newHistory = [...history];
-      const prevQuestionId = newHistory.pop();
-      return survey.questions.find((q) => q.id === prevQuestionId);
+      return undefined;
+      // const newHistory = [...history];
+      // const prevQuestionId = newHistory.pop();
+      // return survey.questions.find((q) => q.id === prevQuestionId);
     } else {
       return survey.questions.find((q) => q.id === questionId);
     }
-  }, [questionId, survey, history]);
+  }, [questionId, survey]);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const showProgressBar = !styling.hideProgressBar;
   const getShowSurveyCloseButton = (offset: number) => {
@@ -120,6 +121,14 @@ export const Survey = ({
       });
     }
   }, [getSetIsResponseSendingFinished]);
+
+  useEffect(() => {
+    if (questionId === "end" && isResponseSendingFinished) {
+      // Post a message to the parent window indicating that the survey is completed.
+      window.parent.postMessage("formbricksSurveyCompleted", "*");
+      onFinished();
+    }
+  }, [isResponseSendingFinished, onFinished, questionId]);
 
   const getNextQuestionId = useCallback(
     ({ startQuestionIndex }: { startQuestionIndex?: number }) => {
@@ -165,11 +174,6 @@ export const Survey = ({
     const finished = nextQuestionId === "end";
     onChange(responseData);
     onResponse({ data: responseData, ttc, finished });
-    if (finished) {
-      // Post a message to the parent window indicating that the survey is completed.
-      window.parent.postMessage("formbricksSurveyCompleted", "*");
-      onFinished();
-    }
     setQuestionId(nextQuestionId);
     // add to history
     setHistory([...history, questionId]);

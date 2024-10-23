@@ -17,6 +17,9 @@ export const SurveySwitch = ({ value, formbricks }: SurveySwitchProps) => {
       <option value="app" className="hover:bg-slate-10 h-10 px-4">
         App Surveys
       </option>
+      <option value="iframe" className="hover:bg-slate-10 h-10 px-4">
+        Test iframe
+      </option>
     </select>
   );
 };
