@@ -27,6 +27,7 @@ export interface SurveyBaseProps {
   clickOutside?: boolean;
   shouldResetQuestionId?: boolean;
   fullSizeCards?: boolean;
+  initialResponseData?: TResponseData;
 }
 
 export interface SurveyInlineProps extends SurveyBaseProps {

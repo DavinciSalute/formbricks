@@ -37,6 +37,7 @@ export const Survey = ({
   clickOutside,
   shouldResetQuestionId,
   fullSizeCards = false,
+  initialResponseData,
 }: SurveyBaseProps) => {
   const isInIframe = window.self !== window.top;
 
@@ -57,7 +58,7 @@ export const Survey = ({
 
   const [loadingElement, setLoadingElement] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
-  const [responseData, setResponseData] = useState<TResponseData>({});
+  const [responseData, setResponseData] = useState<TResponseData>(initialResponseData ?? {});
   const [ttc, setTtc] = useState<TResponseTtc>({});
   const cardArrangement = useMemo(() => {
     if (survey.type === "link") {
