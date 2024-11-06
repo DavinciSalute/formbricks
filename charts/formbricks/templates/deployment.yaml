@@ -63,6 +63,8 @@ spec:
                   key: {{ .Values.formbricks.nextauth.existingSecret.key }}
             - name: MOLECULER_MICROSERVICE_CLIENT_NAME
               value: "{{ .Values.formbricks.moleculerMicroservice.clientName }}"
+            - name: MOLECULER_TRANSPORTER
+              value: "{{ .Values.formbricks.moleculerMicroservice.transporter }}"
             - name: MOLECULER_ENABLE_METRICS
               value: "{{ .Values.formbricks.moleculerMicroservice.enable_metrics }}"
             - name: MOLECULER_ENABLE_METRICS_PROMETHEUS

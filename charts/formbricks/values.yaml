@@ -28,6 +28,7 @@ formbricks:
   moleculerMicroservice:
     enable_metrics: true
     enable_prometheus: true
+    transporter: "nats://localhost:4222"
     clientName: "formbricks"
     clientSecret:
       existingSecret:

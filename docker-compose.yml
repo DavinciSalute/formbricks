@@ -74,6 +74,7 @@ x-moleculer-enable-tracking: &moleculer_enable_tracking false
 x-moleculer-enable-channel-middleware: &moleculer_enable_channel_middleware false
 x-moleculer-microservice-client-name: &moleculer_microservice_client_name 'formbricks-dev'
 x-moleculer-microservice-client-secret: &moleculer_microservice_client_secret 
+x-moleculer-transporter: &moleculer_transporter 
 
 
 services:
@@ -129,6 +130,7 @@ services:
       MOLECULER_ENABLE_METRICS: *moleculer_enable_metrics
       MOLECULER_ENABLE_TRACKING: *moleculer_enable_tracking
       MOLECULER_ENABLE_CHANNEL_MIDDLEWARE: *moleculer_enable_channel_middleware
+      MOLECULER_TRANSPORTER: *moleculer_transporter
       MOLECULER_MICROSERVICE_CLIENT_NAME: *moleculer_microservice_client_name
       MOLECULER_MICROSERVICE_CLIENT_SECRET: *moleculer_microservice_client_secret
 

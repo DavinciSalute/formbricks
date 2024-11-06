@@ -8,8 +8,8 @@
     "lint": "eslint --ext .ts,.tsx --fix ."
   },
   "dependencies": {
-    "@davincihealthcare/microservices-core": "^1.2.0",
-    "@davincihealthcare/microservices-notifications": "^1.4.4",
+    "@davincihealthcare/microservices-core": "^1.6.2",
+    "@davincihealthcare/microservices-notifications": "^1.12.7",
     "@formbricks/config-typescript": "workspace:*",
     "@formbricks/lib": "workspace:*",
     "@formbricks/types": "workspace:*",
