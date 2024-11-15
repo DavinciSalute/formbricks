@@ -38,6 +38,7 @@ interface LinkSurveyPageProps {
     surveyId: string;
   };
   searchParams: {
+    theme?: string;
     suId?: string;
     userId?: string;
     responseId?: string;
@@ -63,6 +64,7 @@ const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
   }
   const survey = await getSurvey(params.surveyId);
 
+  const theme = searchParams.theme;
   const suId = searchParams.suId;
   const userId = searchParams.userId;
   const responseId = searchParams.responseId;
@@ -212,6 +214,7 @@ const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
       survey={survey}
       product={product}
       userId={userId}
+      theme={theme}
       emailVerificationStatus={emailVerificationStatus}
       singleUseId={isSingleUseSurvey ? singleUseId : undefined}
       singleUseResponse={singleUseResponse ? singleUseResponse : undefined}

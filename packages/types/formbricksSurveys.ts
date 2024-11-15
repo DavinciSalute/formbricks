@@ -32,6 +32,7 @@ export interface SurveyBaseProps {
 
 export interface SurveyInlineProps extends SurveyBaseProps {
   containerId: string;
+  theme?: string;
 }
 
 export interface SurveyModalProps extends SurveyBaseProps {

@@ -38,6 +38,7 @@ export const Survey = ({
   shouldResetQuestionId,
   fullSizeCards = false,
   initialResponseData,
+  theme,
 }: SurveyBaseProps) => {
   const isInIframe = window.self !== window.top;
 
@@ -280,7 +281,7 @@ export const Survey = ({
         <div
           className={cn(
             "no-scrollbar md:rounded-custom rounded-t-custom bg-survey-bg flex h-full w-full flex-col justify-between overflow-hidden transition-all duration-1000 ease-in-out",
-            cardArrangement === "simple" ? "fb-survey-shadow" : "",
+            theme === "welbee" ? "" : cardArrangement === "simple" ? "fb-survey-shadow" : "",
             offset === 0 || cardArrangement === "simple" ? "opacity-100" : "opacity-0"
           )}>
           <div
@@ -307,6 +308,7 @@ export const Survey = ({
       setQuestionId={setQuestionId}
       shouldResetQuestionId={shouldResetQuestionId}
       fullSizeCards={fullSizeCards}
+      theme={theme}
     />
   );
 };

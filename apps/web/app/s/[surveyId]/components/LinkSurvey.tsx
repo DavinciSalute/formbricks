@@ -23,6 +23,7 @@ let setQuestionId = (_: string) => {};
 interface LinkSurveyProps {
   survey: TSurvey;
   product: TProduct;
+  theme?: string;
   userId?: string;
   emailVerificationStatus?: string;
   singleUseId?: string;
@@ -40,6 +41,7 @@ interface LinkSurveyProps {
 }
 
 export const LinkSurvey = ({
+  theme,
   survey,
   product,
   userId,
@@ -223,7 +225,8 @@ export const LinkSurvey = ({
       webAppUrl={webAppUrl}
       IS_FORMBRICKS_CLOUD={IS_FORMBRICKS_CLOUD}
       IMPRINT_URL={IMPRINT_URL}
-      PRIVACY_URL={PRIVACY_URL}>
+      PRIVACY_URL={PRIVACY_URL}
+      theme={theme}>
       <SurveyInline
         survey={survey}
         styling={determineStyling()}
@@ -300,6 +303,7 @@ export const LinkSurvey = ({
         startAtQuestionId={startAt && isStartAtValid ? startAt : undefined}
         fullSizeCards={isEmbed ? true : false}
         initialResponseData={hiddenFieldsRecord}
+        theme={theme}
       />
     </LinkSurveyWrapper>
   );
