@@ -38,7 +38,7 @@ interface LinkSurveyPageProps {
     surveyId: string;
   };
   searchParams: {
-    alignForm?: string;
+    alignForm?: 'top' ;
     omitCardBorder?: string;
     omitCardShadow?: string;
     suId?: string;
