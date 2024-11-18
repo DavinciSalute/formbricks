@@ -23,7 +23,7 @@ let setQuestionId = (_: string) => {};
 interface LinkSurveyProps {
   survey: TSurvey;
   product: TProduct;
-  alignForm: string | undefined;
+  alignForm?: 'top';
   omitCardBorder: boolean;
   omitCardShadow: boolean;
   userId?: string;
