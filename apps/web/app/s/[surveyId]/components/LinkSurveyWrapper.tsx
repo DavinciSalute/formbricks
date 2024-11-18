@@ -19,7 +19,7 @@ interface LinkSurveyWrapperProps {
   PRIVACY_URL?: string;
   IS_FORMBRICKS_CLOUD: boolean;
   webAppUrl: string;
-  alignForm: string | undefined;
+  alignForm?: 'top' ;
 }
 
 export const LinkSurveyWrapper = ({
