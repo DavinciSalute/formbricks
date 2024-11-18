@@ -16,7 +16,7 @@ interface StackedCardsContainerProps {
   setQuestionId: (questionId: string) => void;
   shouldResetQuestionId?: boolean;
   fullSizeCards: boolean;
-  theme?: string;
+  omitCardBorder: boolean;
 }
 
 export const StackedCardsContainer = ({
@@ -28,7 +28,7 @@ export const StackedCardsContainer = ({
   setQuestionId,
   shouldResetQuestionId = true,
   fullSizeCards = false,
-  theme,
+  omitCardBorder,
 }: StackedCardsContainerProps) => {
   const [hovered, setHovered] = useState(false);
   const highlightBorderColor =
@@ -171,7 +171,7 @@ export const StackedCardsContainer = ({
         <div
           className={cn("w-full", fullSizeCards ? "h-full" : "")}
           style={
-            theme === "welbee"
+            omitCardBorder
               ? undefined
               : {
                   ...borderStyles,

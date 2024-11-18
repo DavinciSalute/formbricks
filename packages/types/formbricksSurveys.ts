@@ -28,11 +28,12 @@ export interface SurveyBaseProps {
   shouldResetQuestionId?: boolean;
   fullSizeCards?: boolean;
   initialResponseData?: TResponseData;
+  omitCardBorder?: boolean;
+  omitCardShadow?: boolean;
 }
 
 export interface SurveyInlineProps extends SurveyBaseProps {
   containerId: string;
-  theme?: string;
 }
 
 export interface SurveyModalProps extends SurveyBaseProps {

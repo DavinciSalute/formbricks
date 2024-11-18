@@ -19,7 +19,7 @@ interface LinkSurveyWrapperProps {
   PRIVACY_URL?: string;
   IS_FORMBRICKS_CLOUD: boolean;
   webAppUrl: string;
-  theme?: string;
+  alignForm: string | undefined;
 }
 
 export const LinkSurveyWrapper = ({
@@ -34,7 +34,7 @@ export const LinkSurveyWrapper = ({
   PRIVACY_URL,
   IS_FORMBRICKS_CLOUD,
   webAppUrl,
-  theme,
+  alignForm,
 }: LinkSurveyWrapperProps) => {
   //for embedded survey strip away all surrounding css
   const styling = determineStyling();
@@ -55,7 +55,7 @@ export const LinkSurveyWrapper = ({
         <MediaBackground survey={survey} product={product}>
           <div
             className={cn(
-              theme === "welbee" ? "items-start" : "items-end md:items-center",
+              alignForm === "top" ? "items-start" : "items-end md:items-center",
               "flex max-h-dvh min-h-dvh justify-center overflow-clip"
             )}>
             {!styling.isLogoHidden && product.logo?.url && <ClientLogo product={product} />}
