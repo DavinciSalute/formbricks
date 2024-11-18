@@ -15,8 +15,8 @@ interface StackedCardsContainerProps {
   styling: TProductStyling | TSurveyStyling;
   setQuestionId: (questionId: string) => void;
   shouldResetQuestionId?: boolean;
-  fullSizeCards: boolean;
-  omitCardBorder: boolean;
+  fullSizeCards?: boolean;
+  omitCardBorder?: boolean;
 }
 
 export const StackedCardsContainer = ({
