@@ -19,6 +19,7 @@ interface LinkSurveyWrapperProps {
   PRIVACY_URL?: string;
   IS_FORMBRICKS_CLOUD: boolean;
   webAppUrl: string;
+  alignForm?: 'top' ;
 }
 
 export const LinkSurveyWrapper = ({
@@ -33,6 +34,7 @@ export const LinkSurveyWrapper = ({
   PRIVACY_URL,
   IS_FORMBRICKS_CLOUD,
   webAppUrl,
+  alignForm,
 }: LinkSurveyWrapperProps) => {
   //for embedded survey strip away all surrounding css
   const styling = determineStyling();
@@ -51,7 +53,11 @@ export const LinkSurveyWrapper = ({
     return (
       <div>
         <MediaBackground survey={survey} product={product}>
-          <div className="flex max-h-dvh min-h-dvh items-end justify-center overflow-clip md:items-center">
+          <div
+            className={cn(
+              alignForm === "top" ? "items-start" : "items-end md:items-center",
+              "flex max-h-dvh min-h-dvh justify-center overflow-clip"
+            )}>
             {!styling.isLogoHidden && product.logo?.url && <ClientLogo product={product} />}
             <div className="h-full w-full space-y-6 p-0 md:max-w-md">
               {isPreview && (

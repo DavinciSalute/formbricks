@@ -38,6 +38,9 @@ interface LinkSurveyPageProps {
     surveyId: string;
   };
   searchParams: {
+    alignForm?: 'top' ;
+    omitCardBorder?: string;
+    omitCardShadow?: string;
     suId?: string;
     userId?: string;
     responseId?: string;
@@ -62,6 +65,10 @@ const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
     notFound();
   }
   const survey = await getSurvey(params.surveyId);
+
+  const alignForm = searchParams.alignForm;
+  const omitCardBorder = searchParams.omitCardBorder === "true";
+  const omitCardShadow = searchParams.omitCardShadow === "true";
 
   const suId = searchParams.suId;
   const userId = searchParams.userId;
@@ -212,6 +219,9 @@ const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
       survey={survey}
       product={product}
       userId={userId}
+      alignForm={alignForm}
+      omitCardBorder={omitCardBorder}
+      omitCardShadow={omitCardShadow}
       emailVerificationStatus={emailVerificationStatus}
       singleUseId={isSingleUseSurvey ? singleUseId : undefined}
       singleUseResponse={singleUseResponse ? singleUseResponse : undefined}
