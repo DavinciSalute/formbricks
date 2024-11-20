@@ -3,13 +3,11 @@ import { Headline } from "@/components/general/Headline";
 import { QuestionMedia } from "@/components/general/QuestionMedia";
 import { ScrollableContainer } from "@/components/wrappers/ScrollableContainer";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";
-import { useState } from "preact/hooks";
-
+import { useEffect, useState } from "preact/hooks";
 import { getLocalizedValue } from "@formbricks/lib/i18n/utils";
 import { TResponseData, TResponseTtc } from "@formbricks/types/responses";
 import { TUploadFileConfig } from "@formbricks/types/storage";
 import type { TSurveyFileUploadQuestion } from "@formbricks/types/surveys";
-
 import { BackButton } from "../buttons/BackButton";
 import { FileInput } from "../general/FileInput";
 import { Subheader } from "../general/Subheader";
@@ -49,6 +47,12 @@ export const FileUploadQuestion = ({
   const [startTime, setStartTime] = useState(performance.now());
   const isMediaAvailable = question.imageUrl || question.videoUrl;
   useTtc(question.id, ttc, setTtc, startTime, setStartTime, question.id === currentQuestionId);
+  const [hasError, setHasError] = useState(false);
+  useEffect(() => {
+    if (value && value.length > 0) {
+      setHasError(false);
+    }
+  }, [value]);
 
   return (
     <form
@@ -61,7 +65,7 @@ export const FileUploadQuestion = ({
           if (value && value.length > 0) {
             onSubmit({ [question.id]: value }, updatedTtcObj);
           } else {
-            alert("Please upload a file");
+            setHasError(true);
           }
         } else {
           if (value) {
@@ -104,6 +108,7 @@ export const FileUploadQuestion = ({
           />
         </div>
       </ScrollableContainer>
+      {hasError && <div className="mt-1 px-5 text-sm text-red-500">Selezionare un file per proseguire.</div>}
       <div className="flex w-full justify-between px-6 py-4">
         {!isFirstQuestion && (
           <BackButton
