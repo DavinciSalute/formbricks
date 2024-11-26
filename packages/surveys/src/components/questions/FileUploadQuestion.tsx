@@ -47,10 +47,10 @@ export const FileUploadQuestion = ({
   const [startTime, setStartTime] = useState(performance.now());
   const isMediaAvailable = question.imageUrl || question.videoUrl;
   useTtc(question.id, ttc, setTtc, startTime, setStartTime, question.id === currentQuestionId);
-  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (value && value.length > 0) {
-      setHasError(false);
+      setError(null);
     }
   }, [value]);
 
@@ -65,7 +65,7 @@ export const FileUploadQuestion = ({
           if (value && value.length > 0) {
             onSubmit({ [question.id]: value }, updatedTtcObj);
           } else {
-            setHasError(true);
+            setError("Selezionare un file per proseguire.");
           }
         } else {
           if (value) {
@@ -90,6 +90,7 @@ export const FileUploadQuestion = ({
           />
           <FileInput
             htmlFor={question.id}
+            onError={setError}
             surveyId={surveyId}
             onFileUpload={onFileUpload}
             onUploadCallback={(urls: string[]) => {
@@ -108,7 +109,7 @@ export const FileUploadQuestion = ({
           />
         </div>
       </ScrollableContainer>
-      {hasError && <div className="mt-1 px-5 text-sm text-red-500">Selezionare un file per proseguire.</div>}
+      {error && <div className="mt-1 px-5 text-sm text-red-500">{error}</div>}
       <div className="flex w-full justify-between px-6 py-4">
         {!isFirstQuestion && (
           <BackButton

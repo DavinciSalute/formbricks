@@ -85,7 +85,7 @@ export class StorageAPI {
       // if s3 is used, we'll use the text response:
       const errorText = await uploadResponse.text();
       if (presignedFields && errorText && errorText.includes("EntityTooLarge")) {
-        const error = new Error("File size exceeds the size limit for your plan");
+        const error = new Error("La dimensione del file supera il limite per il tuo piano");
         error.name = "FileTooLargeError";
         throw error;
       }
