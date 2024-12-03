@@ -23,7 +23,7 @@ const TestIframeContainer: React.FC = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-        Inserisci un URL per caricare l'iframe
+        Inserisci un URL per caricare l&apos;iframe
       </h1>
       <div className="my-4 grid grid-cols-1 gap-6 md:grid-cols-2">
         <input
