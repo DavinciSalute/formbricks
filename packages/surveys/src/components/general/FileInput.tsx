@@ -1,3 +1,4 @@
+import { t } from "@/lib/translate";
 import { useMemo, useState } from "preact/hooks";
 import { JSXInternal } from "preact/src/jsx";
 import { getOriginalFileNameFromUrl } from "@formbricks/lib/storage/utils";
@@ -7,6 +8,8 @@ import { TUploadFileConfig } from "@formbricks/types/storage";
 interface FileInputProps {
   allowedFileExtensions?: TAllowedFileExtension[];
   surveyId: string | undefined;
+  languageCode: string;
+  onError?: (e: string) => void;
   onUploadCallback: (uploadedUrls: string[]) => void;
   onFileUpload: (file: File, config?: TUploadFileConfig) => Promise<string>;
   fileUrls: string[] | undefined;
@@ -20,6 +23,8 @@ const FILE_LIMIT = 25;
 export const FileInput = ({
   allowedFileExtensions,
   surveyId,
+  languageCode,
+  onError = alert,
   onUploadCallback,
   onFileUpload,
   fileUrls,
@@ -35,7 +40,7 @@ export const FileInput = ({
       const fileBuffer = await file.arrayBuffer();
       const bufferKB = fileBuffer.byteLength / 1024;
       if (bufferKB > maxSizeInMB * 1024) {
-        alert(`File should be less than ${maxSizeInMB} MB`);
+        onError(t("question_input.error_file_size_exceeded", languageCode, { value: maxSizeInMB }));
         return false;
       }
     }
@@ -62,7 +67,11 @@ export const FileInput = ({
       setSelectedFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
       onUploadCallback(fileUrls ? [...fileUrls, ...uploadedUrls] : uploadedUrls);
     } catch (err: any) {
-      alert(err.name === "FileTooLargeError" ? err.message : "Upload failed! Please try again.");
+      onError(
+        err.name === "FileTooLargeError"
+          ? t("question_input.error_file_size_exceeds_plan_limit", languageCode)
+          : t("question_input.error_generic", languageCode)
+      );
     } finally {
       setIsUploading(false);
     }
@@ -72,12 +81,12 @@ export const FileInput = ({
     const fileArray = Array.from(files);
 
     if (!allowMultipleFiles && fileArray.length > 1) {
-      alert("Only one file can be uploaded at a time.");
+      onError(t("question_input.error_file_count_limit", languageCode));
       return;
     }
 
     if (allowMultipleFiles && selectedFiles.length + fileArray.length > FILE_LIMIT) {
-      alert(`You can only upload a maximum of ${FILE_LIMIT} files.`);
+      onError(t("question_input.error_too_many_files", languageCode, { value: FILE_LIMIT }));
       return;
     }
 
@@ -92,7 +101,7 @@ export const FileInput = ({
     if (validFiles.length > 0) {
       handleFileUpload(validFiles);
     } else {
-      alert("No selected files are valid");
+      onError(t("question_input.error_invalid_files", languageCode));
     }
   };
 
@@ -215,7 +224,7 @@ export const FileInput = ({
                 />
               </svg>
               <p className="text-placeholder mt-2 text-sm dark:text-slate-400">
-                <span className="font-medium">Click or drag to upload files.</span>
+                <span className="font-medium">{t("question_input.input_placeholder", languageCode)}</span>
               </p>
               <input
                 type="file"
