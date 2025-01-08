@@ -3,11 +3,15 @@ name: elty-build-docker
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'The branch to build'
-        required: true
-        default: 'main_elty'
+  push:
+    branches:
+      - elty_main
+      - elty_qa
+  pull_request:
+    branches:
+      - feature-sc-*
+      - elty_main
+      - elty_qa
 
 concurrency:
   group: formbricks-${{ github.ref }}
