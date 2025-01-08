@@ -31,8 +31,6 @@ jobs:
           app: formbricks
 
   build:
-    strategy:
-      fail-fast: false
     name: formbricks
     runs-on: github-action-runner-scale-set-docker
     needs: docker-tag
