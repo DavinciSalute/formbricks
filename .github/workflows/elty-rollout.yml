@@ -5,13 +5,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - elty_main
-      - elty_qa
+      - main_elty
+      - qa_elty
   pull_request:
     branches:
       - feature-sc-*
-      - elty_main
-      - elty_qa
+      - main_elty
+      - qa_elty
 
 concurrency:
   group: formbricks-${{ github.ref }}
