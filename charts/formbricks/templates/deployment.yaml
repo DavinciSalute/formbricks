@@ -72,6 +72,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.name }}
                   key: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.key }}
+            - name: MOLECULER_TRANSPORTER
+              value: "{{ .Values.formbricks.moleculerMicroservice.transporter }}"
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
