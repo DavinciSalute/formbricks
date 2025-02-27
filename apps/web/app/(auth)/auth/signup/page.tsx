@@ -1,8 +1,8 @@
 import { FormWrapper } from "@/app/(auth)/auth/components/FormWrapper";
 import { Testimonial } from "@/app/(auth)/auth/components/Testimonial";
 import { SignupForm } from "@/app/(auth)/auth/signup/components/SignupForm";
-import { notFound } from "next/navigation";
-import { getIsMultiOrgEnabled } from "@formbricks/ee/lib/service";
+// import { notFound } from "next/navigation";
+// import { getIsMultiOrgEnabled } from "@formbricks/ee/lib/service";
 import {
   AZURE_OAUTH_ENABLED,
   EMAIL_AUTH_ENABLED,
@@ -12,19 +12,18 @@ import {
   OIDC_DISPLAY_NAME,
   OIDC_OAUTH_ENABLED,
   PASSWORD_RESET_DISABLED,
-  PRIVACY_URL,
-  SIGNUP_ENABLED,
+  PRIVACY_URL, // SIGNUP_ENABLED,
   TERMS_URL,
   WEBAPP_URL,
 } from "@formbricks/lib/constants";
 
-const Page = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
-  const inviteToken = searchParams["inviteToken"] ?? null;
-  const isMultOrgEnabled = await getIsMultiOrgEnabled();
+const Page = async () => {
+  // const inviteToken = searchParams["inviteToken"] ?? null;
+  // const isMultOrgEnabled = await getIsMultiOrgEnabled();
 
-  if (!inviteToken && (!SIGNUP_ENABLED || !isMultOrgEnabled)) {
-    notFound();
-  }
+  // if (!inviteToken && (!SIGNUP_ENABLED || !isMultOrgEnabled)) {
+  //   notFound();
+  // }
 
   return (
     <div className="grid min-h-screen w-full bg-gradient-to-tr from-slate-100 to-slate-50 lg:grid-cols-5">
