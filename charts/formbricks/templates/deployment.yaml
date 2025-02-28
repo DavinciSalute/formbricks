@@ -99,7 +99,7 @@ spec:
               value: "{{ .Values.formbricks.enterpriseLicenseKey }}"
             {{- end }}
             - name: SIGNUP_DISABLED
-              value: 0
+              value: "{{ .Values.formbricks.signupDisabled }}"
             - name: PASSWORD_RESET_DISABLED
               value: "{{ .Values.formbricks.passwordResetDisabled }}"
             - name: EMAIL_VERIFICATION_DISABLED
