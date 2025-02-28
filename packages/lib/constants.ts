@@ -1,4 +1,5 @@
 import "server-only";
+
 import { env } from "./env";
 
 export const MOLECULER_MICROSERVICE_CLIENT_NAME = env.MOLECULER_MICROSERVICE_CLIENT_NAME;
@@ -51,7 +52,7 @@ export const OIDC_ISSUER = env.OIDC_ISSUER;
 export const OIDC_DISPLAY_NAME = env.OIDC_DISPLAY_NAME;
 export const OIDC_SIGNING_ALGORITHM = env.OIDC_SIGNING_ALGORITHM;
 
-export const SIGNUP_ENABLED = true; // env.SIGNUP_DISABLED !== "1";
+export const SIGNUP_ENABLED = env.SIGNUP_DISABLED !== "1";
 export const EMAIL_AUTH_ENABLED = env.EMAIL_AUTH_DISABLED !== "1";
 export const INVITE_DISABLED = env.INVITE_DISABLED === "1";
 
