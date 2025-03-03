@@ -149,10 +149,6 @@ export const sendVerificationEmail = async (user: TEmailUser) => {
   const verificationRequestLink = `${WEBAPP_URL}/auth/verification-requested?email=${encodeURIComponent(
     user.email
   )}`;
-
-  console.log("verificationRequestLink", verificationRequestLink);
-  console.log("verifyLink", verifyLink);
-
   await sendEmail({
     to: user.email,
     subject: "Please verify your email to use Formbricks",
