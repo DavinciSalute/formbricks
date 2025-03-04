@@ -190,6 +190,8 @@ export const adminIframeMiddleware = async (req: NextRequest) => {
 
     const credentialsResponseCookies = parseSetCookieHeader(credentialsResponseCookieHeader);
     const csrfResponseCookies = parseSetCookieHeader(csrfSetCookiesHeaderValue);
+    console.log('csrfResponseCookies',csrfResponseCookies)
+    console.log('credentialsResponseCookies',credentialsResponseCookies)
 
     // il cookie "next-auth.callback-url" | "__Secure-next-auth.callback-url" con la sessione attiva manda in errore. rimuovo
     let requiredCookies = [...csrfResponseCookies, ...credentialsResponseCookies].filter(
