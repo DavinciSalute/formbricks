@@ -67,6 +67,8 @@ export const FileInput = ({
       setSelectedFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
       onUploadCallback(fileUrls ? [...fileUrls, ...uploadedUrls] : uploadedUrls);
     } catch (err: any) {
+      console.log("Error during file upload");
+      console.log(err);
       onError(
         err.name === "FileTooLargeError"
           ? t("question_input.error_file_size_exceeds_plan_limit", languageCode)
