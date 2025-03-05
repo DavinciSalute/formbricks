@@ -212,9 +212,12 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
+      //remove notificationSettings from profile for reduce jwt size
+      const {notificationSettings: _notificationSettings, ...profile} = existingUser
+      
       return {
         ...token,
-        profile: existingUser || null,
+        profile: profile || null,
       };
     },
     async session({ session, token }) {
