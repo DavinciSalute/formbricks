@@ -38,14 +38,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
           env:
             - name: WEBAPP_URL
               value: "{{ .Values.formbricks.webappUrl }}"
@@ -72,6 +64,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.name }}
                   key: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.key }}
+            - name: MOLECULER_TRANSPORTER
+              value: "{{ .Values.formbricks.moleculerMicroservice.transporter }}"
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
