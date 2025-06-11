@@ -1,19 +1,17 @@
 import { authenticateRequest } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-import { handleDeleteFile } from "@/app/storage/[environmentId]/[accessType]/[fileName]/lib/deleteFile";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
-
 import { authOptions } from "@formbricks/lib/authOptions";
 import { hasUserEnvironmentAccess } from "@formbricks/lib/environment/auth";
 import { ZStorageRetrievalParams } from "@formbricks/types/storage";
-
+import { handleDeleteFile } from "./lib/deleteFile";
 import { getFile } from "./lib/getFile";
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { environmentId: string; accessType: string; fileName: string } }
+  { params }: { params: { environmentId: string; accessType: string; fileName: string[] } }
 ) => {
   const paramValidation = ZStorageRetrievalParams.safeParse(params);
 
@@ -27,7 +25,7 @@ export const GET = async (
 
   const { environmentId, accessType, fileName: fileNameOG } = params;
 
-  const fileName = decodeURIComponent(fileNameOG);
+  const fileName = decodeURIComponent(fileNameOG.join("/"));
 
   if (accessType === "public") {
     return await getFile(environmentId, accessType, fileName);
@@ -57,16 +55,26 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (_: NextRequest, { params }: { params: { fileName: string } }) => {
+export const DELETE = async (
+  _: NextRequest,
+  { params }: { params: { environmentId: string; accessType: string; fileName: string[] } }
+) => {
   if (!params.fileName) {
     return responses.badRequestResponse("Fields are missing or incorrectly formatted", {
       fileName: "fileName is required",
     });
   }
 
-  const [environmentId, accessType, file] = params.fileName.split("/");
+  const [environmentId, accessType, ...file] = [params.environmentId, params.accessType, ...params.fileName]
+    .filter(Boolean)
+    .join("/")
+    .split("/");
 
-  const paramValidation = ZStorageRetrievalParams.safeParse({ fileName: file, environmentId, accessType });
+  const paramValidation = ZStorageRetrievalParams.safeParse({
+    fileName: file,
+    environmentId,
+    accessType,
+  });
 
   if (!paramValidation.success) {
     return responses.badRequestResponse(
@@ -94,6 +102,6 @@ export const DELETE = async (_: NextRequest, { params }: { params: { fileName: s
   return await handleDeleteFile(
     paramValidation.data.environmentId,
     paramValidation.data.accessType,
-    paramValidation.data.fileName
+    paramValidation.data.fileName.join("/")
   );
 };
