@@ -38,7 +38,7 @@ interface LinkSurveyPageProps {
     surveyId: string;
   };
   searchParams: {
-    alignForm?: 'top' ;
+    alignForm?: "top";
     omitCardBorder?: string;
     omitCardShadow?: string;
     suId?: string;
@@ -229,7 +229,7 @@ const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
       webAppUrl={WEBAPP_URL}
       responseCount={survey.welcomeCard.showResponseCount ? responseCount : undefined}
       verifiedEmail={verifiedEmail}
-      languageCode={languageCode}
+      languageCode={langParam ?? languageCode}
       attributeClasses={attributeClasses}
       isEmbed={isEmbed}
       IMPRINT_URL={IMPRINT_URL}

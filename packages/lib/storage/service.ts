@@ -13,9 +13,7 @@ import { randomUUID } from "crypto";
 import { access, mkdir, readFile, rmdir, unlink, writeFile } from "fs/promises";
 import { lookup } from "mime-types";
 import path, { join } from "path";
-
 import { TAccessType } from "@formbricks/types/storage";
-
 import {
   MAX_SIZES,
   S3_ACCESS_KEY,
@@ -145,6 +143,14 @@ export const getLocalFile = async (filePath: string): Promise<TGetFileResponse> 
   }
 };
 
+// Slugify the file name (remove everything except alphanumeric and dashes, replace others with single dash)
+const slugify = (str: string) => {
+  return str
+    .replace(/[^a-zA-Z0-9-]+/g, "-") // replace non-alphanumeric and non-dash with dash
+    .replace(/-+/g, "-") // collapse multiple dashes
+    .replace(/^-|-$/g, ""); // trim leading/trailing dashes
+};
+
 // a single service for generating a signed url based on user's environment variables
 export const getUploadSignedUrl = async (
   fileName: string,
@@ -162,7 +168,8 @@ export const getUploadSignedUrl = async (
     throw new Error("File extension not found");
   }
 
-  const updatedFileName = `${fileNameWithoutExtension}--fid--${randomUUID()}.${fileExtension}`;
+  // Use slugified names in the updated file name
+  const updatedFileName = `${slugify(fileNameWithoutExtension)}--fid--${randomUUID()}.${fileExtension}`;
 
   // handle the local storage case first
   if (!isS3Configured()) {

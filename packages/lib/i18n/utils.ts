@@ -32,7 +32,6 @@ import {
   ZSurveyThankYouCard,
   ZSurveyWelcomeCard,
 } from "@formbricks/types/surveys";
-
 import { structuredClone } from "../pollyfills/structuredClone";
 
 // Helper function to create an i18nString from a regular string.
@@ -92,6 +91,8 @@ export const getLocalizedValue = (value: TI18nString | undefined, languageId: st
   if (isI18nObject(value)) {
     if (value[languageId]) {
       return value[languageId];
+    } else if (value.default) {
+      return value.default;
     }
     return "";
   }
