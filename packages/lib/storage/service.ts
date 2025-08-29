@@ -100,7 +100,7 @@ type TGetSignedUrlResponse =
     };
 
 const getS3SignedUrl = async (fileKey: string): Promise<string> => {
-  const expiresIn = accessType === "public" ? 60 * 60 * 3 : 10 * 60;
+  const expiresIn =  60 * 60 * 3;
 
   const getObjectCommand = new GetObjectCommand({
     Bucket: S3_BUCKET_NAME,
