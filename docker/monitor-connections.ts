@@ -175,7 +175,7 @@ function main(): void {
       timestamp: new Date().toISOString(),
       level: "error",
       event: "monitor_error",
-      msg: `Errore durante il monitoraggio: ${error instanceof Error ? error.msg : String(error)}`,
+      msg: `Errore durante il monitoraggio: ${error instanceof Error ? error.message : String(error)}`,
     });
     exit(1);
   }
