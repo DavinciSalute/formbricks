@@ -50,7 +50,7 @@ function getConnectionStats(): ConnectionStats {
       timestamp: new Date().toISOString(),
       level: "error",
       event: "connection_stats_error",
-      msg: `Impossibile ottenere statistiche connessioni: ${error instanceof Error ? error.msg : String(error)}`,
+      msg: `Impossibile ottenere statistiche connessioni: ${error instanceof Error ? error.message : String(error)}`,
     });
     throw error;
   }
