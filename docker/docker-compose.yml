@@ -161,7 +161,7 @@ x-environment: &environment
     ############################################# OPTIONAL (CONNECTION MONITORING) #############################################
 
     # Set the below to 1 to enable automatic connection monitoring and reboot on CLOSE_WAIT threshold
-    # CONNECTION_MONITOR_ENABLED: 1
+    # CONNECTION_MONITOR_DISABLED: 0
 
     # Set the threshold for CLOSE_WAIT connections before triggering a reboot (default: 250)
     # CONNECTION_CLOSE_WAIT_THRESHOLD: 250
