@@ -24,7 +24,7 @@ interface LogEntry {
   stats?: ConnectionStats;
   threshold?: number;
   action?: string;
-  message: string;
+  msg: string;
 }
 
 function log(entry: LogEntry): void {
@@ -50,7 +50,7 @@ function getConnectionStats(): ConnectionStats {
       timestamp: new Date().toISOString(),
       level: "error",
       event: "connection_stats_error",
-      message: `Impossibile ottenere statistiche connessioni: ${error instanceof Error ? error.message : String(error)}`,
+      msg: `Impossibile ottenere statistiche connessioni: ${error instanceof Error ? error.msg : String(error)}`,
     });
     throw error;
   }
@@ -125,7 +125,7 @@ function performReboot(stats: ConnectionStats, threshold: number): void {
     stats,
     threshold,
     action: "process_exit",
-    message: `Reboot triggerato: ${stats.closeWait} connessioni CLOSE_WAIT superano la soglia di ${threshold}`,
+    msg: `Reboot triggerato: ${stats.closeWait} connessioni CLOSE_WAIT superano la soglia di ${threshold}`,
   });
 
   // Termina il processo Node.js, Docker lo riavvierà automaticamente grazie a restart: always
@@ -141,7 +141,7 @@ function main(): void {
       timestamp: new Date().toISOString(),
       level: "info",
       event: "monitor_disabled",
-      message: "Monitoraggio connessioni disabilitato tramite CONNECTION_MONITOR_ENABLED",
+      msg: "Monitoraggio connessioni disabilitato tramite CONNECTION_MONITOR_ENABLED",
     });
     exit(0);
   }
@@ -155,7 +155,7 @@ function main(): void {
       event: "connection_stats",
       stats,
       threshold,
-      message: `Statistiche connessioni: ESTABLISHED=${stats.established} (porta 3000: ${stats.establishedPort3000}), TIME_WAIT=${stats.timeWait}, CLOSE_WAIT=${stats.closeWait}, FIN_WAIT=${stats.finWait}, Totale=${stats.total}`,
+      msg: `Statistiche connessioni: ESTABLISHED=${stats.established} (porta 3000: ${stats.establishedPort3000}), TIME_WAIT=${stats.timeWait}, CLOSE_WAIT=${stats.closeWait}, FIN_WAIT=${stats.finWait}, Totale=${stats.total}`,
     });
 
     if (shouldReboot(stats.closeWait, threshold)) {
@@ -167,7 +167,7 @@ function main(): void {
         event: "monitor_check_passed",
         stats,
         threshold,
-        message: `Monitoraggio OK: ${stats.closeWait} connessioni CLOSE_WAIT sotto la soglia di ${threshold}`,
+        msg: `Monitoraggio OK: ${stats.closeWait} connessioni CLOSE_WAIT sotto la soglia di ${threshold}`,
       });
     }
   } catch (error) {
@@ -175,7 +175,7 @@ function main(): void {
       timestamp: new Date().toISOString(),
       level: "error",
       event: "monitor_error",
-      message: `Errore durante il monitoraggio: ${error instanceof Error ? error.message : String(error)}`,
+      msg: `Errore durante il monitoraggio: ${error instanceof Error ? error.msg : String(error)}`,
     });
     exit(1);
   }
