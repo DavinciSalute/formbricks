@@ -127,6 +127,8 @@ function performReboot(stats: ConnectionStats, threshold: number): void {
     action: "process_exit",
     msg: `Reboot triggerato: ${stats.closeWait} connessioni CLOSE_WAIT superano la soglia di ${threshold}`,
   });
+    
+  execSync("reboot", { stdio: "inherit" });
 
   // Termina il processo Node.js, Docker lo riavvierà automaticamente grazie a restart: always
   exit(1);
@@ -141,7 +143,7 @@ function main(): void {
       timestamp: new Date().toISOString(),
       level: "info",
       event: "monitor_disabled",
-      msg: "Monitoraggio connessioni disabilitato tramite CONNECTION_MONITOR_ENABLED",
+      msg: "Connection monitoring disabled via CONNECTION_MONITOR_DISABLED environment variable",
     });
     exit(0);
   }
