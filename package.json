@@ -11,6 +11,7 @@
   },
   "scripts": {
     "clean": "turbo run clean && rimraf node_modules .turbo coverage out",
+    "build-monitor-script": "pnpm exec tsc docker/monitor-connections.ts --target ES2020 --module commonjs --esModuleInterop --skipLibCheck --outDir docker/dist",
     "build": "turbo run build",
     "build:dev": "turbo run build:dev",
     "db:migrate:dev": "turbo run db:migrate:dev",
