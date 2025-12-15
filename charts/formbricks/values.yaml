@@ -152,6 +152,11 @@ formbricks:
   ## OPTIONAL additional settings
   # enterpriseLicenseKey: ""
 
+  ## OPTIONAL connection monitoring settings
+  # connectionMonitor:
+  #   disabled: "0"  # Set to "1" to disable connection monitoring
+  #   closeWaitThreshold: "250"  # Number of CLOSE_WAIT connections before triggering reboot
+
 replicaCount: 1  # WARNING: multiple replics will only work if "uploads" is a shared filesystem
 
 image:

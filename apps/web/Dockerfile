@@ -91,6 +91,10 @@ COPY --from=installer --chown=nextjs:nextjs /app/docker/dist/monitor-connections
 # Install Prisma globally
 RUN PRISMA_VERSION=$(cat prisma_version.txt) && npm install -g prisma@$PRISMA_VERSION
 
+# Copia e rendi eseguibile lo script entrypoint (prima di cambiare utente)
+COPY /docker/entrypoint.sh /app/docker/entrypoint.sh
+RUN chmod +x /app/docker/entrypoint.sh
+
 EXPOSE 3000
 ENV HOSTNAME "0.0.0.0"
 USER nextjs
@@ -99,6 +103,5 @@ USER nextjs
 RUN mkdir -p /home/nextjs/apps/web/uploads/
 VOLUME /home/nextjs/apps/web/uploads/
 
-CMD supercronic -quiet /app/docker/cronjobs & \
-    # (cd packages/database && npm run db:migrate:deploy) && \
-    exec node apps/web/server.js
+# Usa lo script entrypoint invece del comando diretto
+ENTRYPOINT ["/app/docker/entrypoint.sh"]
