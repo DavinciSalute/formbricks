@@ -23,7 +23,7 @@ trap cleanup TERM INT
 
 # Avvia supercronic in background per i cronjob
 echo "[$(date +'%Y-%m-%d %H:%M:%S')] Avvio supercronic per i cronjob..."
-supercronic /app/docker/cronjobs &
+supercronic -passthrough-logs  -json  /app/docker/cronjobs &
 SUPERCRONIC_PID=$!
 
 # Attendi un momento per assicurarsi che supercronic sia avviato
