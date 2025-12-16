@@ -55,7 +55,22 @@ function getConnectionStats(): ConnectionStats {
     throw error;
   }
 
-  const lines = netstatOutput.split("\n").filter((line) => line.trim().startsWith("tcp"));
+  // Filtra le righe: per ss rimuovi l'intestazione e le righe vuote
+  // ss -ant produce righe che iniziano con lo stato (LISTEN, ESTAB, TIME-WAIT, ecc.)
+  // netstat -an produce righe che iniziano con "tcp"
+  const lines = netstatOutput
+    .split("\n")
+    .filter((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return false;
+      // Per ss: escludi la riga di intestazione e accetta righe con stati TCP
+      if (usingSS) {
+        return !trimmed.startsWith("State") && 
+               (trimmed.match(/^(LISTEN|ESTAB|TIME-WAIT|TIME_WAIT|CLOSE-WAIT|CLOSE_WAIT|FIN-WAIT|FIN_WAIT|SYN-SENT|SYN-RECV|LAST-ACK|CLOSING)/) !== null);
+      }
+      // Per netstat: accetta righe che iniziano con "tcp"
+      return trimmed.startsWith("tcp");
+    });
   
   let established = 0;
   let timeWait = 0;
@@ -72,8 +87,9 @@ function getConnectionStats(): ConnectionStats {
     // netstat usa nomi completi: ESTABLISHED, TIME_WAIT, CLOSE_WAIT, FIN_WAIT_1, FIN_WAIT_2
     
     if (usingSS) {
-      // Formato ss: tcp ESTAB 0 0 127.0.0.1:3000 127.0.0.1:54321
-      const state = parts[1] || "";
+      // Formato ss: ESTAB 0 0 127.0.0.1:3000 127.0.0.1:54321
+      // Lo stato è il primo campo (parts[0])
+      const state = parts[0] || "";
       if (state.includes("ESTAB")) {
         established++;
         if (line.includes(":3000") || line.includes("3000")) {
