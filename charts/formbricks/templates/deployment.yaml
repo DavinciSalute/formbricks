@@ -356,6 +356,16 @@ spec:
             {{- end }}
             - name: IS_FORMBRICKS_CLOUD
               value: "0"
+            {{- if .Values.formbricks.connectionMonitor }}
+            {{- if .Values.formbricks.connectionMonitor.disabled }}
+            - name: CONNECTION_MONITOR_DISABLED
+              value: "{{ .Values.formbricks.connectionMonitor.disabled }}"
+            {{- end }}
+            {{- if .Values.formbricks.connectionMonitor.closeWaitThreshold }}
+            - name: CONNECTION_CLOSE_WAIT_THRESHOLD
+              value: "{{ .Values.formbricks.connectionMonitor.closeWaitThreshold }}"
+            {{- end }}
+            {{- end }}
 
           {{- if .Values.persistence.enabled }}
           volumeMounts:

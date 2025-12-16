@@ -54,6 +54,10 @@ RUN pnpm install
 # RUN pnpm post-install --filter=@formbricks/web...
 RUN pnpm build --filter=@formbricks/web...
 
+# Compile connection monitor script
+COPY docker/monitor-connections.ts /app/docker/monitor-connections.ts
+RUN cd /app && pnpm build-monitor-script     
+
 # Extract Prisma version
 RUN jq -r '.devDependencies.prisma' packages/database/package.json > /prisma_version.txt
 
@@ -65,6 +69,7 @@ RUN npm install -g corepack@latest && corepack enable
 
 RUN apk add --no-cache curl \
     && apk add --no-cache supercronic \
+    && apk add --no-cache iproute2 \
     # && addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 
@@ -81,9 +86,14 @@ COPY --from=installer --chown=nextjs:nextjs /app/packages/database/package.json 
 COPY --from=installer --chown=nextjs:nextjs /app/packages/database/migrations ./packages/database/migrations
 COPY --from=installer --chown=nextjs:nextjs /prisma_version.txt .
 COPY /docker/cronjobs /app/docker/cronjobs
+COPY --from=installer --chown=nextjs:nextjs /app/docker/dist/monitor-connections.js /app/docker/monitor-connections.js
 
 # Install Prisma globally
 RUN PRISMA_VERSION=$(cat prisma_version.txt) && npm install -g prisma@$PRISMA_VERSION
+
+# Copia e rendi eseguibile lo script entrypoint (prima di cambiare utente)
+COPY /docker/entrypoint.sh /app/docker/entrypoint.sh
+RUN chmod +x /app/docker/entrypoint.sh
 
 EXPOSE 3000
 ENV HOSTNAME "0.0.0.0"
@@ -93,6 +103,5 @@ USER nextjs
 RUN mkdir -p /home/nextjs/apps/web/uploads/
 VOLUME /home/nextjs/apps/web/uploads/
 
-CMD supercronic -quiet /app/docker/cronjobs & \
-    # (cd packages/database && npm run db:migrate:deploy) && \
-    exec node apps/web/server.js
+# Usa lo script entrypoint invece del comando diretto
+ENTRYPOINT ["/app/docker/entrypoint.sh"]
