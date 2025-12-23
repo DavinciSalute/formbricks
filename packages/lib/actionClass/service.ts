@@ -24,7 +24,7 @@ const selectActionClass = {
   environmentId: true,
 } satisfies Prisma.ActionClassSelect;
 
-export const getActionClasses = (environmentId: string, page?: number): Promise<TActionClass[]> =>
+export const getActionClasses = async (environmentId: string, page?: number): Promise<TActionClass[]> =>
   cache(
     async () => {
       validateInputs([environmentId, ZId], [page, ZOptionalNumber]);
@@ -52,7 +52,7 @@ export const getActionClasses = (environmentId: string, page?: number): Promise<
   )();
 
 // This function is used to get an action by its name and environmentId(it can return private actions as well)
-export const getActionClassByEnvironmentIdAndName = (
+export const getActionClassByEnvironmentIdAndName = async (
   environmentId: string,
   name: string
 ): Promise<TActionClass | null> =>
@@ -80,7 +80,7 @@ export const getActionClassByEnvironmentIdAndName = (
     }
   )();
 
-export const getActionClass = (actionClassId: string): Promise<TActionClass | null> =>
+export const getActionClass = async (actionClassId: string): Promise<TActionClass | null> =>
   cache(
     async () => {
       validateInputs([actionClassId, ZId]);
