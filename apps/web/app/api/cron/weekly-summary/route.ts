@@ -1,9 +1,7 @@
 import { responses } from "@/app/lib/api/response";
 import { headers } from "next/headers";
-
 import { sendNoLiveSurveyNotificationEmail, sendWeeklySummaryNotificationEmail } from "@formbricks/email";
 import { CRON_SECRET } from "@formbricks/lib/constants";
-
 import { getNotificationResponse } from "./lib/notificationResponse";
 import { getOrganizationIds } from "./lib/organization";
 import { getProductsByOrganizationId } from "./lib/product";
@@ -11,8 +9,9 @@ import { getProductsByOrganizationId } from "./lib/product";
 const BATCH_SIZE = 500;
 
 export const POST = async (): Promise<Response> => {
+  const headersList = await headers();
   // Check authentication
-  if (headers().get("x-api-key") !== CRON_SECRET) {
+  if (headersList.get("x-api-key") !== CRON_SECRET) {
     return responses.notAuthenticatedResponse();
   }
 

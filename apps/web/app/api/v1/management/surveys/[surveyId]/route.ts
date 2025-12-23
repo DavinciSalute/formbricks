@@ -4,6 +4,12 @@ import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { deleteSurvey, getSurvey, updateSurvey } from "@formbricks/lib/survey/service";
 import { TSurvey, ZSurvey } from "@formbricks/types/surveys";
 
+interface Context {
+  params: Promise<{
+    surveyId: string;
+  }>;
+}
+
 const fetchAndAuthorizeSurvey = async (authentication: any, surveyId: string): Promise<TSurvey | null> => {
   const survey = await getSurvey(surveyId);
   if (!survey) {
@@ -15,10 +21,7 @@ const fetchAndAuthorizeSurvey = async (authentication: any, surveyId: string): P
   return survey;
 };
 
-export const GET = async (
-  request: Request,
-  { params: asyncParams }: { params: Promise<{ surveyId: string }> }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
     const params = await asyncParams;
     const authentication = await authenticateRequest(request);

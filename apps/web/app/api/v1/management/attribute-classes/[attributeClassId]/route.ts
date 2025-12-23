@@ -9,6 +9,12 @@ import {
 import { TAttributeClass, ZAttributeClassUpdateInput } from "@formbricks/types/attributeClasses";
 import { TAuthenticationApiKey } from "@formbricks/types/auth";
 
+interface Context {
+  params: Promise<{
+    attributeClassId: string;
+  }>;
+}
+
 const fetchAndAuthorizeAttributeClass = async (
   authentication: TAuthenticationApiKey,
   attributeId: string
@@ -23,10 +29,7 @@ const fetchAndAuthorizeAttributeClass = async (
   return attributeClass;
 };
 
-export const GET = async (
-  request: Request,
-  { params: asyncParams }: { params: Promise<{ attributeClassId: string }> }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
     const params = await asyncParams;
     const authentication = await authenticateRequest(request);

@@ -6,6 +6,12 @@ import { deleteResponse, getResponse, updateResponse } from "@formbricks/lib/res
 import { getSurvey } from "@formbricks/lib/survey/service";
 import { TResponse, ZResponseUpdateInput } from "@formbricks/types/responses";
 
+interface Context {
+  params: Promise<{
+    responseId: string;
+  }>;
+}
+
 const fetchAndValidateResponse = async (authentication: any, responseId: string): Promise<TResponse> => {
   const response = await getResponse(responseId);
   if (!response || !(await canUserAccessResponse(authentication, response))) {
@@ -27,10 +33,7 @@ const canUserAccessResponse = async (authentication: any, response: TResponse): 
   }
 };
 
-export const GET = async (
-  request: Request,
-  { params: asyncParams }: { params: Promise<{ responseId: string }> }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
     const params = await asyncParams;
     const authentication = await authenticateRequest(request);

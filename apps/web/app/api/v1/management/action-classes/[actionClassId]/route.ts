@@ -5,6 +5,12 @@ import { deleteActionClass, getActionClass, updateActionClass } from "@formbrick
 import { TActionClass, ZActionClassInput } from "@formbricks/types/actionClasses";
 import { TAuthenticationApiKey } from "@formbricks/types/auth";
 
+interface Context {
+  params: Promise<{
+    actionClassId: string;
+  }>;
+}
+
 const fetchAndAuthorizeActionClass = async (
   authentication: TAuthenticationApiKey,
   actionClassId: string
@@ -19,10 +25,7 @@ const fetchAndAuthorizeActionClass = async (
   return actionClass;
 };
 
-export const GET = async (
-  request: Request,
-  { params: asyncParams }: { params: Promise<{ actionClassId: string }> }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
     const params = await asyncParams;
     const authentication = await authenticateRequest(request);
