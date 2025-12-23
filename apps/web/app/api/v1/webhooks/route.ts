@@ -1,14 +1,14 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { headers } from "next/headers";
-
 import { getApiKeyFromKey } from "@formbricks/lib/apiKey/service";
 import { createWebhook, getWebhooks } from "@formbricks/lib/webhook/service";
 import { DatabaseError, InvalidInputError } from "@formbricks/types/errors";
 import { ZWebhookInput } from "@formbricks/types/webhooks";
 
 export const GET = async () => {
-  const apiKey = headers().get("x-api-key");
+  const headersList = await headers();
+  const apiKey = headersList.get("x-api-key");
   if (!apiKey) {
     return responses.notAuthenticatedResponse();
   }
@@ -30,7 +30,8 @@ export const GET = async () => {
 };
 
 export const POST = async (request: Request) => {
-  const apiKey = headers().get("x-api-key");
+  const headersList = await headers();
+  const apiKey = headersList.get("x-api-key");
   if (!apiKey) {
     return responses.notAuthenticatedResponse();
   }

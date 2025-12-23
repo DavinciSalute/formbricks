@@ -1,11 +1,10 @@
 import { responses } from "@/app/lib/api/response";
 import { headers } from "next/headers";
-
 import { prisma } from "@formbricks/database";
 import { CRON_SECRET } from "@formbricks/lib/constants";
 
 export const POST = async () => {
-  const headersList = headers();
+  const headersList = await headers();
   const apiKey = headersList.get("x-api-key");
 
   if (!apiKey || apiKey !== CRON_SECRET) {

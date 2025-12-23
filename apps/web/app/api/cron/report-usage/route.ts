@@ -52,7 +52,7 @@ const reportOrganizationUsage = async (organization: TOrganization) => {
 };
 
 export const POST = async (): Promise<Response> => {
-  const headersList = headers();
+  const headersList = await headers();
   const apiKey = headersList.get("x-api-key");
 
   if (!apiKey || apiKey !== CRON_SECRET) {

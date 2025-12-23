@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest, context: Context): Promise<Response
   const environmentId = params.environmentId;
 
   const accessType = "private"; // private files are accessible only by authorized users
-  const headersList = headers();
+  const headersList = await headers();
 
   const fileType = headersList.get("X-File-Type");
   const encodedFileName = headersList.get("X-File-Name");

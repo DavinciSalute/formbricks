@@ -3,7 +3,6 @@ import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { sendToPipeline } from "@/app/lib/pipelines";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
-
 import { capturePosthogEnvironmentEvent } from "@formbricks/lib/posthogServer";
 import { createResponseLegacy } from "@formbricks/lib/response/service";
 import { getSurvey } from "@formbricks/lib/survey/service";
@@ -16,15 +15,16 @@ export const OPTIONS = async (): Promise<Response> => {
 };
 
 export const POST = async (request: Request): Promise<Response> => {
+  const headersList = await headers();
   const responseInput = await request.json();
   if (responseInput.personId === "legacy") {
     responseInput.personId = null;
   }
   const agent = UAParser(request.headers.get("user-agent"));
   const country =
-    headers().get("CF-IPCountry") ||
-    headers().get("X-Vercel-IP-Country") ||
-    headers().get("CloudFront-Viewer-Country") ||
+    headersList.get("CF-IPCountry") ||
+    headersList.get("X-Vercel-IP-Country") ||
+    headersList.get("CloudFront-Viewer-Country") ||
     undefined;
   const inputValidation = ZResponseLegacyInput.safeParse(responseInput);
 
