@@ -1,15 +1,14 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { createAction } from "@formbricks/lib/action/service";
 import { IS_FORMBRICKS_CLOUD } from "@formbricks/lib/constants";
 import { getOrganizationByEnvironmentId } from "@formbricks/lib/organization/service";
 import { ZActionInput } from "@formbricks/types/actions";
 
 interface Context {
-  params: {
+  params: Promise<{
     environmentId: string;
-  };
+  }>;
 }
 
 export const OPTIONS = async (): Promise<Response> => {
@@ -18,12 +17,13 @@ export const OPTIONS = async (): Promise<Response> => {
 
 export const POST = async (req: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const jsonInput = await req.json();
 
     // validate using zod
     const inputValidation = ZActionInput.safeParse({
       ...jsonInput,
-      environmentId: context.params.environmentId,
+      environmentId: params.environmentId,
     });
 
     if (!inputValidation.success) {
@@ -36,7 +36,7 @@ export const POST = async (req: Request, context: Context): Promise<Response> =>
 
     // Formbricks Cloud: Make sure environment is part of a paid plan
     if (IS_FORMBRICKS_CLOUD) {
-      const organization = await getOrganizationByEnvironmentId(context.params.environmentId);
+      const organization = await getOrganizationByEnvironmentId(params.environmentId);
       if (!organization || organization.billing.features.userTargeting.status !== "active") {
         // temporary return status code 200 to avoid CORS issues; will be changed to 400 in the future
         return responses.successResponse({}, true);

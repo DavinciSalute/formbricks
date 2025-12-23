@@ -13,11 +13,12 @@ import { PersonCard } from "./components/PersonCard";
 
 const Page = async ({
   params,
-  searchParams,
+  searchParams: asyncSearchParams,
 }: {
   params: Promise<{ environmentId: string }>;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
+  const searchParams = await asyncSearchParams;
   const pageNumber = searchParams.page ? parseInt(searchParams.page as string) : 1;
   const { environmentId } = await params;
   const [environment, totalPeople] = await Promise.all([

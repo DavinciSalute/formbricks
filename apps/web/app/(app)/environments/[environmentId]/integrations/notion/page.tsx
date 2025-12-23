@@ -1,5 +1,4 @@
 import { NotionWrapper } from "@/app/(app)/environments/[environmentId]/integrations/notion/components/NotionWrapper";
-
 import { getAttributeClasses } from "@formbricks/lib/attributeClass/service";
 import {
   NOTION_AUTH_URL,
@@ -17,7 +16,8 @@ import { GoBackButton } from "@formbricks/ui/GoBackButton";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const enabled = !!(
     NOTION_OAUTH_CLIENT_ID &&
     NOTION_OAUTH_CLIENT_SECRET &&

@@ -1,7 +1,6 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { deleteActionClass, getActionClass, updateActionClass } from "@formbricks/lib/actionClass/service";
 import { TActionClass, ZActionClassInput } from "@formbricks/types/actionClasses";
 import { TAuthenticationApiKey } from "@formbricks/types/auth";
@@ -22,9 +21,10 @@ const fetchAndAuthorizeActionClass = async (
 
 export const GET = async (
   request: Request,
-  { params }: { params: { actionClassId: string } }
+  { params: asyncParams }: { params: Promise<{ actionClassId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const actionClass = await fetchAndAuthorizeActionClass(authentication, params.actionClassId);
@@ -37,11 +37,9 @@ export const GET = async (
   }
 };
 
-export const PUT = async (
-  request: Request,
-  { params }: { params: { actionClassId: string } }
-): Promise<Response> => {
+export const PUT = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const actionClass = await fetchAndAuthorizeActionClass(authentication, params.actionClassId);
@@ -78,11 +76,9 @@ export const PUT = async (
   }
 };
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { actionClassId: string } }
-): Promise<Response> => {
+export const DELETE = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const actionClass = await fetchAndAuthorizeActionClass(authentication, params.actionClassId);

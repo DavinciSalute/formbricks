@@ -1,6 +1,5 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { getActionClasses } from "@formbricks/lib/actionClass/service";
 import { updateAttributes } from "@formbricks/lib/attribute/service";
 import { getOrganizationByEnvironmentId } from "@formbricks/lib/organization/service";
@@ -12,10 +11,10 @@ import { getSyncSurveys } from "@formbricks/lib/survey/service";
 import { ZJsPeopleAttributeInput } from "@formbricks/types/js";
 
 interface Context {
-  params: {
+  params: Promise<{
     personId: string;
     environmentId: string;
-  };
+  }>;
 }
 
 export const OPTIONS = async (): Promise<Response> => {
@@ -24,7 +23,8 @@ export const OPTIONS = async (): Promise<Response> => {
 
 export const POST = async (req: Request, context: Context): Promise<Response> => {
   try {
-    const { personId, environmentId } = context.params;
+    const params = await context.params;
+    const { personId, environmentId } = params;
     const jsonInput = await req.json();
 
     // validate using zod

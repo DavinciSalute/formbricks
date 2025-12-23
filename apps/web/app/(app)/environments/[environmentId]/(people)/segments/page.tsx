@@ -12,7 +12,8 @@ import { getSegments } from "@formbricks/lib/segment/service";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const [environment, segments, attributeClasses, actionClasses, organization] = await Promise.all([
     getEnvironment(params.environmentId),
     getSegments(params.environmentId),

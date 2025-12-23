@@ -3,16 +3,15 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { z } from "zod";
-
 import { getAttributesByUserId, updateAttributes } from "@formbricks/lib/attribute/service";
 import { createPerson, getPersonByUserId } from "@formbricks/lib/person/service";
 import { ZAttributes } from "@formbricks/types/attributes";
 
 interface Context {
-  params: {
+  params: Promise<{
     userId: string;
     environmentId: string;
-  };
+  }>;
 }
 
 export const OPTIONS = async (): Promise<Response> => {
@@ -21,7 +20,8 @@ export const OPTIONS = async (): Promise<Response> => {
 
 export const POST = async (req: Request, context: Context): Promise<Response> => {
   try {
-    const { userId, environmentId } = context.params;
+    const params = await context.params;
+    const { userId, environmentId } = params;
     const jsonInput = await req.json();
 
     // transform all attributes to string if attributes are present

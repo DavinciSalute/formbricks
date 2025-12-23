@@ -2,7 +2,6 @@ import { sendFreeLimitReachedEventToPosthogBiWeekly } from "@/app/api/v1/client/
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { NextRequest } from "next/server";
-
 import { getActionClassByEnvironmentIdAndName, getActionClasses } from "@formbricks/lib/actionClass/service";
 import {
   IS_FORMBRICKS_CLOUD,
@@ -30,9 +29,10 @@ export const OPTIONS = async (): Promise<Response> => {
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { environmentId: string } }
+  { params: asyncParams }: { params: Promise<{ environmentId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const searchParams = request.nextUrl.searchParams;
     const version =
       searchParams.get("version") === "undefined" || searchParams.get("version") === null

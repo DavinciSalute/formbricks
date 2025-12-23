@@ -9,7 +9,6 @@ import WebhookLogo from "@/images/webhook.png";
 import ZapierLogo from "@/images/zapier-small.png";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
-
 import { authOptions } from "@formbricks/lib/authOptions";
 import { getEnvironment } from "@formbricks/lib/environment/service";
 import { getIntegrations } from "@formbricks/lib/integration/service";
@@ -23,7 +22,8 @@ import { ErrorComponent } from "@formbricks/ui/ErrorComponent";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const environmentId = params.environmentId;
 
   const [

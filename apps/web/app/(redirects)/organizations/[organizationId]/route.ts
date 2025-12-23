@@ -2,14 +2,14 @@ import { hasOrganizationAccess } from "@/app/lib/api/apiHelper";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
-
 import { authOptions } from "@formbricks/lib/authOptions";
 import { getEnvironments } from "@formbricks/lib/environment/service";
 import { getProducts } from "@formbricks/lib/product/service";
 import { AuthenticationError, AuthorizationError } from "@formbricks/types/errors";
 
-export const GET = async (_: Request, context: { params: { organizationId: string } }) => {
-  const organizationId = context?.params?.organizationId;
+export const GET = async (_: Request, context: { params: Promise<{ organizationId: string }> }) => {
+  const params = await context.params;
+  const organizationId = params?.organizationId;
   if (!organizationId) return notFound();
   // check auth
   const session = await getServerSession(authOptions);

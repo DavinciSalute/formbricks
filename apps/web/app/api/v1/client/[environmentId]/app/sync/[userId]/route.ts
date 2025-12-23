@@ -37,15 +37,16 @@ export const OPTIONS = async (): Promise<Response> => {
 export const GET = async (
   request: NextRequest,
   {
-    params,
+    params: asyncParams,
   }: {
-    params: {
+    params: Promise<{
       environmentId: string;
       userId: string;
-    };
+    }>;
   }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const { device } = userAgent(request);
     const version = request.nextUrl.searchParams.get("version");
 

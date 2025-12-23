@@ -3,7 +3,6 @@ import { AttributesSection } from "@/app/(app)/environments/[environmentId]/(peo
 import { DeletePersonButton } from "@/app/(app)/environments/[environmentId]/(people)/people/[personId]/components/DeletePersonButton";
 import { ResponseSection } from "@/app/(app)/environments/[environmentId]/(people)/people/[personId]/components/ResponseSection";
 import { getServerSession } from "next-auth";
-
 import { getAttributes } from "@formbricks/lib/attribute/service";
 import { getAttributeClasses } from "@formbricks/lib/attributeClass/service";
 import { authOptions } from "@formbricks/lib/authOptions";
@@ -18,7 +17,8 @@ import { getTagsByEnvironmentId } from "@formbricks/lib/tag/service";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const [environment, environmentTags, product, session, organization, person, attributes, attributeClasses] =
     await Promise.all([
       getEnvironment(params.environmentId),

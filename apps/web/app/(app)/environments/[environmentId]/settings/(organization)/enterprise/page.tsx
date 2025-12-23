@@ -2,7 +2,6 @@ import { OrganizationSettingsNavbar } from "@/app/(app)/environments/[environmen
 import { CheckIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-
 import { getIsEnterpriseEdition } from "@formbricks/ee/lib/service";
 import { authOptions } from "@formbricks/lib/authOptions";
 import { IS_FORMBRICKS_CLOUD } from "@formbricks/lib/constants";
@@ -13,7 +12,8 @@ import { Button } from "@formbricks/ui/Button";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   if (IS_FORMBRICKS_CLOUD) {
     notFound();
   }

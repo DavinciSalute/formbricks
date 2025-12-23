@@ -1,7 +1,6 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import {
   deleteAttributeClass,
   getAttributeClass,
@@ -26,9 +25,10 @@ const fetchAndAuthorizeAttributeClass = async (
 
 export const GET = async (
   request: Request,
-  { params }: { params: { attributeClassId: string } }
+  { params: asyncParams }: { params: Promise<{ attributeClassId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);
@@ -41,11 +41,9 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { attributeClassId: string } }
-): Promise<Response> => {
+export const DELETE = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);
@@ -62,11 +60,9 @@ export const DELETE = async (
   }
 };
 
-export const PUT = async (
-  request: Request,
-  { params }: { params: { attributeClassId: string } }
-): Promise<Response> => {
+export const PUT = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);

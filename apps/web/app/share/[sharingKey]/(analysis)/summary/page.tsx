@@ -10,7 +10,8 @@ import { getSurvey, getSurveyIdByResultShareKey } from "@formbricks/lib/survey/s
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const surveyId = await getSurveyIdByResultShareKey(params.sharingKey);
 
   if (!surveyId) {

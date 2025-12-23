@@ -2,7 +2,6 @@ import { AddWebhookButton } from "@/app/(app)/environments/[environmentId]/integ
 import { WebhookRowData } from "@/app/(app)/environments/[environmentId]/integrations/webhooks/components/WebhookRowData";
 import { WebhookTable } from "@/app/(app)/environments/[environmentId]/integrations/webhooks/components/WebhookTable";
 import { WebhookTableHeading } from "@/app/(app)/environments/[environmentId]/integrations/webhooks/components/WebhookTableHeading";
-
 import { getEnvironment } from "@formbricks/lib/environment/service";
 import { getSurveys } from "@formbricks/lib/survey/service";
 import { getWebhooks } from "@formbricks/lib/webhook/service";
@@ -10,7 +9,8 @@ import { GoBackButton } from "@formbricks/ui/GoBackButton";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const [webhooksUnsorted, surveys, environment] = await Promise.all([
     getWebhooks(params.environmentId),
     getSurveys(params.environmentId, 200), // HOTFIX: not getting all surveys for now since it's maxing out the prisma accelerate limit

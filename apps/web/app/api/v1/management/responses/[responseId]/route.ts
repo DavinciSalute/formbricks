@@ -1,7 +1,6 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { hasUserEnvironmentAccess } from "@formbricks/lib/environment/auth";
 import { deleteResponse, getResponse, updateResponse } from "@formbricks/lib/response/service";
 import { getSurvey } from "@formbricks/lib/survey/service";
@@ -30,9 +29,10 @@ const canUserAccessResponse = async (authentication: any, response: TResponse): 
 
 export const GET = async (
   request: Request,
-  { params }: { params: { responseId: string } }
+  { params: asyncParams }: { params: Promise<{ responseId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     await fetchAndValidateResponse(authentication, params.responseId);
@@ -46,11 +46,9 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { responseId: string } }
-): Promise<Response> => {
+export const DELETE = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const response = await fetchAndValidateResponse(authentication, params.responseId);
@@ -64,11 +62,9 @@ export const DELETE = async (
   }
 };
 
-export const PUT = async (
-  request: Request,
-  { params }: { params: { responseId: string } }
-): Promise<Response> => {
+export const PUT = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     await fetchAndValidateResponse(authentication, params.responseId);

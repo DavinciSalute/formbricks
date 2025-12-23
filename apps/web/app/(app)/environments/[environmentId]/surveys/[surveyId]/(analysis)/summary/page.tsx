@@ -3,7 +3,6 @@ import { SummaryPage } from "@/app/(app)/environments/[environmentId]/surveys/[s
 import { SurveyAnalysisCTA } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/components/SurveyAnalysisCTA";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-
 import { getAttributeClasses } from "@formbricks/lib/attributeClass/service";
 import { authOptions } from "@formbricks/lib/authOptions";
 import { WEBAPP_URL } from "@formbricks/lib/constants";
@@ -18,7 +17,8 @@ import { getUser } from "@formbricks/lib/user/service";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const session = await getServerSession(authOptions);
   if (!session) {
     throw new Error("Unauthorized");

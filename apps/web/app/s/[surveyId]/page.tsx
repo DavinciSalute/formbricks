@@ -34,10 +34,10 @@ const PrintError = ({ children }: { children: string }) => {
 };
 
 interface LinkSurveyPageProps {
-  params: {
+  params: Promise<{
     surveyId: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     alignForm?: "top";
     omitCardBorder?: string;
     omitCardShadow?: string;
@@ -47,10 +47,11 @@ interface LinkSurveyPageProps {
     verify?: string;
     lang?: string;
     embed?: string;
-  };
+  }>;
 }
 
-export const generateMetadata = async ({ params }: LinkSurveyPageProps): Promise<Metadata> => {
+export const generateMetadata = async ({ params: asyncParams }: LinkSurveyPageProps): Promise<Metadata> => {
+  const params = await asyncParams;
   const validId = ZId.safeParse(params.surveyId);
   if (!validId.success) {
     notFound();
@@ -59,7 +60,9 @@ export const generateMetadata = async ({ params }: LinkSurveyPageProps): Promise
   return getMetadataForLinkSurvey(params.surveyId);
 };
 
-const Page = async ({ params, searchParams }: LinkSurveyPageProps) => {
+const Page = async ({ params: asyncParams, searchParams: asyncSearchParams }: LinkSurveyPageProps) => {
+  const params = await asyncParams;
+  const searchParams = await asyncSearchParams;
   const validId = ZId.safeParse(params.surveyId);
   if (!validId.success) {
     notFound();

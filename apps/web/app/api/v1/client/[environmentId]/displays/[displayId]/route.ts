@@ -1,14 +1,13 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { updateDisplay } from "@formbricks/lib/display/service";
 import { ZDisplayUpdateInput } from "@formbricks/types/displays";
 
 interface Context {
-  params: {
+  params: Promise<{
     displayId: string;
     environmentId: string;
-  };
+  }>;
 }
 
 export const OPTIONS = async (): Promise<Response> => {
@@ -16,7 +15,8 @@ export const OPTIONS = async (): Promise<Response> => {
 };
 
 export const PUT = async (request: Request, context: Context): Promise<Response> => {
-  const { displayId, environmentId } = context.params;
+  const params = await context.params;
+  const { displayId, environmentId } = params;
   const jsonInput = await request.json();
   const inputValidation = ZDisplayUpdateInput.safeParse({
     ...jsonInput,

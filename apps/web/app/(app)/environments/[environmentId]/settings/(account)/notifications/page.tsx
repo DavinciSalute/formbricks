@@ -1,14 +1,12 @@
 import { AccountSettingsNavbar } from "@/app/(app)/environments/[environmentId]/settings/(account)/components/AccountSettingsNavbar";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { getServerSession } from "next-auth";
-
 import { prisma } from "@formbricks/database";
 import { authOptions } from "@formbricks/lib/authOptions";
 import { getUser } from "@formbricks/lib/user/service";
 import { TUserNotificationSettings } from "@formbricks/types/user";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
-
 import { EditAlerts } from "./components/EditAlerts";
 import { EditWeeklySummary } from "./components/EditWeeklySummary";
 import { IntegrationsTip } from "./components/IntegrationsTip";
@@ -79,7 +77,9 @@ const getMemberships = async (userId: string): Promise<Membership[]> => {
   return memberships;
 };
 
-const Page = async ({ params, searchParams }) => {
+const Page = async ({ params: asyncParams, searchParams: asyncSearchParams }) => {
+  const params = await asyncParams;
+  const searchParams = await asyncSearchParams;
   const session = await getServerSession(authOptions);
   if (!session) {
     throw new Error("Unauthorized");

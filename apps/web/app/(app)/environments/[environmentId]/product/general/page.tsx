@@ -1,6 +1,5 @@
 import { ProductConfigNavigation } from "@/app/(app)/environments/[environmentId]/product/components/ProductConfigNavigation";
 import { getServerSession } from "next-auth";
-
 import { getMultiLanguagePermission } from "@formbricks/ee/lib/service";
 import { authOptions } from "@formbricks/lib/authOptions";
 import { getMembershipByUserIdOrganizationId } from "@formbricks/lib/membership/service";
@@ -11,13 +10,13 @@ import { ErrorComponent } from "@formbricks/ui/ErrorComponent";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 import { SettingsId } from "@formbricks/ui/SettingsId";
-
 import { SettingsCard } from "../../settings/components/SettingsCard";
 import { DeleteProduct } from "./components/DeleteProduct";
 import { EditProductNameForm } from "./components/EditProductNameForm";
 import { EditWaitingTimeForm } from "./components/EditWaitingTimeForm";
 
-const Page = async ({ params }: { params: { environmentId: string } }) => {
+const Page = async ({ params: asyncParams }: { params: Promise<{ environmentId: string }> }) => {
+  const params = await asyncParams;
   const [product, session, organization] = await Promise.all([
     getProductByEnvironmentId(params.environmentId),
     getServerSession(authOptions),

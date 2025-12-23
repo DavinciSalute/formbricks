@@ -9,7 +9,8 @@ import { updateUser } from "@formbricks/lib/user/service";
 import { Button } from "@formbricks/ui/Button";
 import { ContentLayout } from "./components/ContentLayout";
 
-const Page = async ({ searchParams }) => {
+const Page = async ({ searchParams: asyncSearchParams }) => {
+  const searchParams = await asyncSearchParams;
   const session = await getServerSession(authOptions);
 
   try {
