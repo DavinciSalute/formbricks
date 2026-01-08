@@ -1,6 +1,5 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
-
 import { deletePerson, getPerson } from "@formbricks/lib/person/service";
 import { TAuthenticationApiKey } from "@formbricks/types/auth";
 import { TPerson } from "@formbricks/types/people";
@@ -23,9 +22,10 @@ const fetchAndAuthorizePerson = async (
 
 export const GET = async (
   request: Request,
-  { params }: { params: { personId: string } }
+  { params: asyncParams }: { params: Promise<{ personId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const person = await fetchAndAuthorizePerson(authentication, params.personId);
@@ -38,8 +38,12 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (request: Request, { params }: { params: { personId: string } }) => {
+export const DELETE = async (
+  request: Request,
+  { params: asyncParams }: { params: Promise<{ personId: string }> }
+) => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const person = await fetchAndAuthorizePerson(authentication, params.personId);

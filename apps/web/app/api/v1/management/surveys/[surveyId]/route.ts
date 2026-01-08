@@ -1,9 +1,14 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { deleteSurvey, getSurvey, updateSurvey } from "@formbricks/lib/survey/service";
 import { TSurvey, ZSurvey } from "@formbricks/types/surveys";
+
+interface Context {
+  params: Promise<{
+    surveyId: string;
+  }>;
+}
 
 const fetchAndAuthorizeSurvey = async (authentication: any, surveyId: string): Promise<TSurvey | null> => {
   const survey = await getSurvey(surveyId);
@@ -16,11 +21,9 @@ const fetchAndAuthorizeSurvey = async (authentication: any, surveyId: string): P
   return survey;
 };
 
-export const GET = async (
-  request: Request,
-  { params }: { params: { surveyId: string } }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const survey = await fetchAndAuthorizeSurvey(authentication, params.surveyId);
@@ -33,11 +36,9 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { surveyId: string } }
-): Promise<Response> => {
+export const DELETE = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const survey = await fetchAndAuthorizeSurvey(authentication, params.surveyId);
@@ -51,11 +52,9 @@ export const DELETE = async (
   }
 };
 
-export const PUT = async (
-  request: Request,
-  { params }: { params: { surveyId: string } }
-): Promise<Response> => {
+export const PUT = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const survey = await fetchAndAuthorizeSurvey(authentication, params.surveyId);

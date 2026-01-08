@@ -6,9 +6,10 @@ import { AuthenticationError, ValidationError, ValidationErrorWithDetails } from
 
 export const POST = async (
   request: Request,
-  { params }: { params: { surveyId: string } }
+  { params: asyncParams }: { params: Promise<{ surveyId: string }> }
 ): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const apiKeyData = await getApiKeyDataOrFail(request);
     const organizationId = apiKeyData.environment.product.organizationId;
 

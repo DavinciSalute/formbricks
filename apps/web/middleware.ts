@@ -57,7 +57,7 @@ export const middleware = async (request: NextRequest) => {
   let ip =
     request.headers.get("cf-connecting-ip") ||
     request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-    request.ip;
+    null;
 
   if (ip) {
     try {

@@ -29,7 +29,8 @@ const MembersLoading = () => (
   </div>
 );
 
-const Page = async ({ params }: { params: { environmentId: string } }) => {
+const Page = async ({ params: asyncParams }: { params: Promise<{ environmentId: string }> }) => {
+  const params = await asyncParams;
   const session = await getServerSession(authOptions);
   if (!session) {
     throw new Error("Unauthenticated");

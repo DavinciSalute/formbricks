@@ -1,11 +1,11 @@
 import { getMetadataForLinkSurvey } from "@/app/s/[surveyId]/metadata";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-
 import { getShortUrl } from "@formbricks/lib/shortUrl/service";
 import { TShortUrl, ZShortUrlId } from "@formbricks/types/shortUrl";
 
-export const generateMetadata = async ({ params }): Promise<Metadata> => {
+export const generateMetadata = async ({ params: asyncParams }): Promise<Metadata> => {
+  const params = await asyncParams;
   if (!params.shortUrlId) {
     notFound();
   }
@@ -28,7 +28,8 @@ export const generateMetadata = async ({ params }): Promise<Metadata> => {
   }
 };
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   if (!params.shortUrlId) {
     notFound();
   }

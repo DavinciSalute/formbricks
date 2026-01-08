@@ -1,7 +1,6 @@
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { NextRequest } from "next/server";
-
 import { getAttributesByUserId, updateAttributes } from "@formbricks/lib/attribute/service";
 import { createPerson, getPersonByUserId } from "@formbricks/lib/person/service";
 import { ZJsPeopleUpdateAttributeInput } from "@formbricks/types/js";
@@ -13,15 +12,16 @@ export const OPTIONS = async () => {
 
 export const PUT = async (
   req: NextRequest,
-  context: { params: { environmentId: string; userId: string } }
+  context: { params: Promise<{ environmentId: string; userId: string }> }
 ) => {
   try {
-    const environmentId = context.params.environmentId;
+    const params = await context.params;
+    const environmentId = params.environmentId;
     if (!environmentId) {
       return responses.badRequestResponse("environmentId is required", { environmentId }, true);
     }
 
-    const userId = context.params.userId;
+    const userId = params.userId;
     if (!userId) {
       return responses.badRequestResponse("userId is required", { userId }, true);
     }

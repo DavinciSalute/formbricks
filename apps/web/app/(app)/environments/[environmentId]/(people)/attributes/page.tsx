@@ -1,19 +1,18 @@
 import { PeopleSecondaryNavigation } from "@/app/(app)/environments/[environmentId]/(people)/people/components/PeopleSecondaryNavigation";
 import { CircleHelpIcon } from "lucide-react";
 import { Metadata } from "next";
-
 import { getAttributeClasses } from "@formbricks/lib/attributeClass/service";
 import { Button } from "@formbricks/ui/Button";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
-
 import { AttributeClassesTable } from "./components/AttributeClassesTable";
 
 export const metadata: Metadata = {
   title: "Attributes",
 };
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   let attributeClasses = await getAttributeClasses(params.environmentId);
 
   const HowToAddAttributesButton = (

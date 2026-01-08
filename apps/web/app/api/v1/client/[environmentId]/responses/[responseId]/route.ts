@@ -18,8 +18,9 @@ export const OPTIONS = async (): Promise<Response> => {
 
 export const PUT = async (
   request: Request,
-  { params }: { params: { responseId: string } }
+  { params: asyncParams }: { params: Promise<{ responseId: string }> }
 ): Promise<Response> => {
+  const params = await asyncParams;
   const { responseId } = params;
   let logger = baseLogger.child({ responseId });
 

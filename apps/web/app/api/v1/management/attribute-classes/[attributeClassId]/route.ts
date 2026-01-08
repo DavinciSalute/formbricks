@@ -1,7 +1,6 @@
 import { authenticateRequest, handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import {
   deleteAttributeClass,
   getAttributeClass,
@@ -9,6 +8,12 @@ import {
 } from "@formbricks/lib/attributeClass/service";
 import { TAttributeClass, ZAttributeClassUpdateInput } from "@formbricks/types/attributeClasses";
 import { TAuthenticationApiKey } from "@formbricks/types/auth";
+
+interface Context {
+  params: Promise<{
+    attributeClassId: string;
+  }>;
+}
 
 const fetchAndAuthorizeAttributeClass = async (
   authentication: TAuthenticationApiKey,
@@ -24,11 +29,9 @@ const fetchAndAuthorizeAttributeClass = async (
   return attributeClass;
 };
 
-export const GET = async (
-  request: Request,
-  { params }: { params: { attributeClassId: string } }
-): Promise<Response> => {
+export const GET = async (request: Request, { params: asyncParams }: Context): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);
@@ -41,11 +44,9 @@ export const GET = async (
   }
 };
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { attributeClassId: string } }
-): Promise<Response> => {
+export const DELETE = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);
@@ -62,11 +63,9 @@ export const DELETE = async (
   }
 };
 
-export const PUT = async (
-  request: Request,
-  { params }: { params: { attributeClassId: string } }
-): Promise<Response> => {
+export const PUT = async (request: Request, context: Context): Promise<Response> => {
   try {
+    const params = await context.params;
     const authentication = await authenticateRequest(request);
     if (!authentication) return responses.notAuthenticatedResponse();
     const attributeClass = await fetchAndAuthorizeAttributeClass(authentication, params.attributeClassId);

@@ -1,7 +1,6 @@
 import { getUpdatedState } from "@/app/api/v1/(legacy)/js/sync/lib/sync";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
-
 import { updateAttributes } from "@formbricks/lib/attribute/service";
 import { personCache } from "@formbricks/lib/person/cache";
 import { getPerson } from "@formbricks/lib/person/service";
@@ -12,8 +11,12 @@ export const OPTIONS = async (): Promise<Response> => {
   return responses.successResponse({}, true);
 };
 
-export const POST = async (req: Request, { params }): Promise<Response> => {
+export const POST = async (
+  req: Request,
+  { params: asyncParams }: { params: Promise<{ personId: string }> }
+): Promise<Response> => {
   try {
+    const params = await asyncParams;
     const { personId } = params;
 
     if (!personId || personId === "legacy") {

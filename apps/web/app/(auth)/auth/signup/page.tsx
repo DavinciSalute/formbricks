@@ -18,7 +18,12 @@ import {
   WEBAPP_URL,
 } from "@formbricks/lib/constants";
 
-const Page = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
+const Page = async ({
+  searchParams: asyncSearchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const searchParams = await asyncSearchParams;
   const inviteToken = searchParams["inviteToken"] ?? null;
   const isMultOrgEnabled = await getIsMultiOrgEnabled();
 

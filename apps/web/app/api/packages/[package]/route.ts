@@ -2,9 +2,10 @@ import { responses } from "@/app/lib/api/response";
 import fs from "fs/promises";
 import { NextRequest } from "next/server";
 
-export const GET = async (_: NextRequest, { params }: { params: { slug: string } }) => {
+export const GET = async (_: NextRequest, { params }: { params: Promise<{ package: string }> }) => {
+  const resolvedParams = await params;
   let path: string;
-  const packageRequested = params["package"];
+  const packageRequested = resolvedParams.package;
 
   switch (packageRequested) {
     case "app":

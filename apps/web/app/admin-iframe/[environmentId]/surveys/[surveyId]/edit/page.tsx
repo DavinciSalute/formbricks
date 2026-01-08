@@ -15,14 +15,16 @@ import { getSegments } from "@formbricks/lib/segment/service";
 import { getSurvey } from "@formbricks/lib/survey/service";
 import { ErrorComponent } from "@formbricks/ui/ErrorComponent";
 
-export const generateMetadata = async ({ params }) => {
+export const generateMetadata = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const survey = await getSurvey(params.surveyId);
   return {
     title: survey?.name ? `${survey?.name} | Editor` : "Editor",
   };
 };
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const [
     survey,
     product,

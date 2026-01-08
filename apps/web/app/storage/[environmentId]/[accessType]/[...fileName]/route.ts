@@ -11,8 +11,11 @@ import { getFile } from "./lib/getFile";
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { environmentId: string; accessType: string; fileName: string[] } }
+  {
+    params: asyncParams,
+  }: { params: Promise<{ environmentId: string; accessType: string; fileName: string[] }> }
 ) => {
+  const params = await asyncParams;
   const paramValidation = ZStorageRetrievalParams.safeParse(params);
 
   if (!paramValidation.success) {
@@ -57,8 +60,11 @@ export const GET = async (
 
 export const DELETE = async (
   _: NextRequest,
-  { params }: { params: { environmentId: string; accessType: string; fileName: string[] } }
+  {
+    params: asyncParams,
+  }: { params: Promise<{ environmentId: string; accessType: string; fileName: string[] }> }
 ) => {
+  const params = await asyncParams;
   if (!params.fileName) {
     return responses.badRequestResponse("Fields are missing or incorrectly formatted", {
       fileName: "fileName is required",

@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
-
 import { StripePriceLookupKeys } from "@formbricks/ee/billing/lib/constants";
 import { getOrganizationByEnvironmentId } from "@formbricks/lib/organization/service";
-
 import { upgradePlanAction } from "../actions";
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const organization = await getOrganizationByEnvironmentId(params.environmentId);
   if (!organization) {
     throw new Error("Organization not found");

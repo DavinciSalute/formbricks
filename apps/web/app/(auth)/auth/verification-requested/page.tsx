@@ -4,8 +4,9 @@ import { z } from "zod";
 
 const VerificationPageSchema = z.string().email();
 
-const Page = (params) => {
-  const email = params.searchParams.email;
+const Page = async ({ searchParams: asyncSearchParams }) => {
+  const searchParams = await asyncSearchParams;
+  const email = searchParams.email;
   try {
     const parsedEmail = VerificationPageSchema.parse(email).toLowerCase();
     return (

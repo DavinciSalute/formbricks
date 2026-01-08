@@ -1,6 +1,5 @@
 import { PeopleSecondaryNavigation } from "@/app/(app)/environments/[environmentId]/(people)/people/components/PeopleSecondaryNavigation";
 import { CircleHelpIcon } from "lucide-react";
-
 import { ITEMS_PER_PAGE } from "@formbricks/lib/constants";
 import { getEnvironment } from "@formbricks/lib/environment/service";
 import { getPeople, getPeopleCount } from "@formbricks/lib/person/service";
@@ -10,20 +9,21 @@ import { EmptySpaceFiller } from "@formbricks/ui/EmptySpaceFiller";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 import { Pagination } from "@formbricks/ui/Pagination";
-
 import { PersonCard } from "./components/PersonCard";
 
 const Page = async ({
   params,
-  searchParams,
+  searchParams: asyncSearchParams,
 }: {
-  params: { environmentId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ environmentId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
+  const searchParams = await asyncSearchParams;
   const pageNumber = searchParams.page ? parseInt(searchParams.page as string) : 1;
+  const { environmentId } = await params;
   const [environment, totalPeople] = await Promise.all([
-    getEnvironment(params.environmentId),
-    getPeopleCount(params.environmentId),
+    getEnvironment(environmentId),
+    getPeopleCount(environmentId),
   ]);
   if (!environment) {
     throw new Error("Environment not found");
@@ -37,7 +37,7 @@ const Page = async ({
     people = [];
     hidePagination = true;
   } else {
-    people = await getPeople(params.environmentId, pageNumber);
+    people = await getPeople(environmentId, pageNumber);
   }
 
   const HowToAddPeopleButton = (
@@ -54,7 +54,7 @@ const Page = async ({
   return (
     <PageContentWrapper>
       <PageHeader pageTitle="People" cta={HowToAddPeopleButton}>
-        <PeopleSecondaryNavigation activeId="people" environmentId={params.environmentId} />
+        <PeopleSecondaryNavigation activeId="people" environmentId={environmentId} />
       </PageHeader>
       {people.length === 0 ? (
         <EmptySpaceFiller
@@ -77,7 +77,7 @@ const Page = async ({
       )}
       {hidePagination ? null : (
         <Pagination
-          baseUrl={`/environments/${params.environmentId}/people`}
+          baseUrl={`/environments/${environmentId}/people`}
           currentPage={pageNumber}
           totalItems={totalPeople}
           itemsPerPage={ITEMS_PER_PAGE}

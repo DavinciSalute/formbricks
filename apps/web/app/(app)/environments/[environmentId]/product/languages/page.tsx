@@ -8,7 +8,8 @@ import { getProductByEnvironmentId } from "@formbricks/lib/product/service";
 import { PageContentWrapper } from "@formbricks/ui/PageContentWrapper";
 import { PageHeader } from "@formbricks/ui/PageHeader";
 
-const Page = async ({ params }: { params: { environmentId: string } }) => {
+const Page = async ({ params: asyncParams }: { params: Promise<{ environmentId: string }> }) => {
+  const params = await asyncParams;
   const product = await getProductByEnvironmentId(params.environmentId);
 
   if (!product) {

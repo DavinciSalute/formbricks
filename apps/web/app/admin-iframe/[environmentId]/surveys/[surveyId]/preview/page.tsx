@@ -9,14 +9,16 @@ import { getSurvey } from "@formbricks/lib/survey/service";
 import { ErrorComponent } from "@formbricks/ui/ErrorComponent";
 import { PreviewSurvey } from "@formbricks/ui/PreviewSurvey";
 
-export const generateMetadata = async ({ params }) => {
+export const generateMetadata = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const survey = await getSurvey(params.surveyId);
   return {
     title: survey?.name ? `${survey?.name} | Editor` : "Editor",
   };
 };
 
-const Page = async ({ params }) => {
+const Page = async ({ params: asyncParams }) => {
+  const params = await asyncParams;
   const [survey, product, environment, actionClasses, attributeClasses, organization, session] =
     await Promise.all([
       getSurvey(params.surveyId),
