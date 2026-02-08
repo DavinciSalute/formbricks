@@ -230,6 +230,31 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+# Startup probe - generous timeout for Next.js cold start (up to 150s)
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 5
+  failureThreshold: 30
+
+# Readiness probe - mark pod ready only when app responds
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+
+# Liveness probe - restart pod if app becomes unresponsive
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 15
+  failureThreshold: 3
+
 # Persistence is required for storing user uploads
 # WARNING: you MUST use a ReadWriteMany volume (such as NFS/EFS) if you intend to run more than one replica.
 # NOTE: you may be able to disable persistence here if you configure S3 above.
