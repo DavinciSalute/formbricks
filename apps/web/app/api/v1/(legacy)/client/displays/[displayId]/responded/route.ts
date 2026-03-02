@@ -1,6 +1,8 @@
 import { responses } from "@/app/lib/api/response";
 import { markDisplayRespondedLegacy } from "@formbricks/lib/display/service";
 
+export const dynamic = "force-dynamic";
+
 export const OPTIONS = async (): Promise<Response> => {
   return responses.successResponse({}, true);
 };
