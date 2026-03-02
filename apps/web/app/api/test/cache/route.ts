@@ -37,10 +37,12 @@ export const POST = async (request: NextRequest) => {
       revalidateTag(CACHE_TAG);
 
       // Fa redirect a se stesso con il flag invalidated=true
+      // Usa solo il pathname per evitare problemi con i proxy
       const url = new URL(request.url);
       url.searchParams.set("invalidated", "true");
+      const redirectPath = url.pathname + url.search;
 
-      return NextResponse.redirect(url, { status: 307 });
+      return NextResponse.redirect(redirectPath, { status: 307 });
     }
 
     // Se il flag è presente, genera e restituisce il nuovo valore dalla cache
