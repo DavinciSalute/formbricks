@@ -170,11 +170,10 @@ const nextConfig = {
   },
 };
 
-// set custom cache handler
-// Not longer supported in Next 15.0.7
-// if (process.env.CUSTOM_CACHE_DISABLED !== "1") {
-//   nextConfig.cacheHandler = require.resolve("./cache-handler.mjs");
-// }
+
+if (process.env.REDIS_URL) {
+  nextConfig.cacheHandler = require.resolve("@trieb.work/nextjs-turbo-redis-cache");
+}
 
 // set actions allowed origins
 if (process.env.WEBAPP_URL) {
