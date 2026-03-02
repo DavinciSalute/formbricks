@@ -34,11 +34,11 @@ const nextConfig = {
       fullUrl: true,
     },
   },
-  outputFileTracingIncludes: {
-    "app/api/packages": ["../../packages/js-core/dist/*", "../../packages/surveys/dist/*"],
-  },
   experimental: {
-  //   instrumentationHook: true,
+    instrumentationHook: true,
+    outputFileTracingIncludes: {
+      "app/api/packages": ["../../packages/js-core/dist/*", "../../packages/surveys/dist/*"],
+    },
   },
   transpilePackages: ["@formbricks/database", "@formbricks/ee", "@formbricks/ui", "@formbricks/lib"],
   images: {
@@ -175,11 +175,6 @@ const nextConfig = {
 // if (process.env.CUSTOM_CACHE_DISABLED !== "1") {
 //   nextConfig.cacheHandler = require.resolve("./cache-handler.mjs");
 // }
-
-// set actions allowed origins
-if (process.env.REDIS_URL) {
-  nextConfig.cacheHandler = require.resolve("@trieb.work/nextjs-turbo-redis-cache");
-}
 
 // set actions allowed origins
 if (process.env.WEBAPP_URL) {
