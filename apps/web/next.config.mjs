@@ -17,7 +17,6 @@ const getHostname = (url) => {
   return urlObj.hostname;
 };
 
-
 const nextConfig = {
   assetPrefix: process.env.ASSET_PREFIX_URL || undefined,
   output: "standalone",
