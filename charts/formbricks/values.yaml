@@ -144,6 +144,7 @@ formbricks:
   ## OPTIONAL monitoring settings
   telemetryDisabled: 0
   debug: 0
+  # debugCacheHandler: ""
   # sentryDsn: ""
   # posthog:
   #   apiHost: ""

@@ -70,6 +70,10 @@ spec:
             - name: REDIS_URL
               value: "redis://{{ include "formbricks.fullname" . }}-redis:{{ .Values.redis.service.port }}"
             {{- end }}
+            {{- if .Values.formbricks.debugCacheHandler }}
+            - name: DEBUG_CACHE_HANDLER
+              value: "{{ .Values.formbricks.debugCacheHandler }}"
+            {{- end }}
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
