@@ -1,0 +1,19 @@
+{{- if eq (include "formbricks.redis.enabled" .) "true" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "formbricks.fullname" . }}-redis
+  labels:
+    {{- include "formbricks.labels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+spec:
+  type: {{ .Values.redis.service.type }}
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    {{- include "formbricks.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+{{- end }}

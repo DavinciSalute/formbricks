@@ -66,6 +66,10 @@ spec:
                   key: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.key }}
             - name: MOLECULER_TRANSPORTER
               value: "{{ .Values.formbricks.moleculerMicroservice.transporter }}"
+            {{- if eq (include "formbricks.redis.enabled" .) "true" }}
+            - name: REDIS_URL
+              value: "redis://{{ include "formbricks.fullname" . }}-redis:{{ .Values.redis.service.port }}"
+            {{- end }}
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
