@@ -30,6 +30,8 @@ spec:
             - redis-server
             - --appendonly
             - "yes"
+            - --notify-keyspace-events
+            - "Exe"
           volumeMounts:
             - name: redis-data
               mountPath: /data
