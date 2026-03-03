@@ -18,6 +18,7 @@ const getHostname = (url) => {
 };
 
 const nextConfig = {
+  cacheHandler: require.resolve("./cache-handler.mjs"),
   assetPrefix: process.env.ASSET_PREFIX_URL || undefined,
   output: "standalone",
   serverExternalPackages: [
@@ -170,10 +171,6 @@ const nextConfig = {
   },
 };
 
-
-if (process.env.REDIS_URL) {
-  nextConfig.cacheHandler = require.resolve("@trieb.work/nextjs-turbo-redis-cache");
-}
 
 // set actions allowed origins
 if (process.env.WEBAPP_URL) {
