@@ -278,7 +278,7 @@ redis:
   enabled: false  # Auto-enabled when replicaCount > 1 or autoscaling.enabled == true
   image:
     repository: redis/redis-stack
-    tag: "7.2-v1"
+    tag: "7.4.0-v8"
     pullPolicy: IfNotPresent
   resources: {}
     # limits:
