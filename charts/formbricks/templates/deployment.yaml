@@ -73,6 +73,8 @@ spec:
             {{- if .Values.formbricks.debugCacheHandler }}
             - name: DEBUG_CACHE_HANDLER
               value: "{{ .Values.formbricks.debugCacheHandler }}"
+            - name: NEXT_PRIVATE_DEBUG_CACHE
+              value: "{{ .Values.formbricks.debugCacheHandler }}"
             {{- end }}
             - name: ENCRYPTION_KEY
               valueFrom:
