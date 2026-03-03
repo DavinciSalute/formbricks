@@ -144,7 +144,6 @@ formbricks:
   ## OPTIONAL monitoring settings
   telemetryDisabled: 0
   debug: 0
-  # debugCacheHandler: ""
   # sentryDsn: ""
   # posthog:
   #   apiHost: ""
@@ -277,18 +276,16 @@ autoscaling:
 redis:
   enabled: false  # Auto-enabled when replicaCount > 1 or autoscaling.enabled == true
   image:
-    repository: redis/redis-stack-server
-    tag: "7.4.0-v8"
+    repository: redis
+    tag: "7-alpine"
     pullPolicy: IfNotPresent
   resources: {}
-    # Redis Stack requires more memory than standard Redis due to included modules (RedisJSON, RedisSearch, etc.)
-    # Recommended minimum for Redis Stack:
     # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
     #   cpu: 200m
     #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
   service:
     type: ClusterIP
     port: 6379
