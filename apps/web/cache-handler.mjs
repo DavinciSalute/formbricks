@@ -1,97 +1,79 @@
-// Import dinamico per evitare che Redis si connetta durante la build
-// La libreria @trieb.work/nextjs-turbo-redis-cache esegue codice a livello di modulo
-// che crea un singleton RedisCacheComponentsHandler che si connette a Redis
-// anche se non viene usato.
+import { CacheHandler } from "@neshca/cache-handler";
+import createLruHandler from "@neshca/cache-handler/local-lru";
+import createRedisHandler from "@neshca/cache-handler/redis-strings";
+import { createClient } from "redis";
 
-let currCacheHandler;
-let RedisStringsHandler = null; // Sarà caricato dinamicamente solo quando necessario
- 
 function isProductionBuild() {
-    return process.env.NEXT_PHASE === 'phase-production-build';
+  return process.env.NEXT_PHASE === "phase-production-build";
 }
 
-async function loadRedisHandler() {
-    if (!RedisStringsHandler) {
-        // Import dinamico solo quando necessario (non durante la build)
-        const redisModule = await import('@trieb.work/nextjs-turbo-redis-cache');
-        RedisStringsHandler = redisModule.RedisStringsHandler;
-    }
-    return RedisStringsHandler;
-}
+CacheHandler.onCreation(async () => {
+  let redisClient;
 
-class ChacheHandlerManager {
-    nullCacheHandler = {
-        get: () => Promise.resolve(undefined),
-        set: () => Promise.resolve(),
-        refreshTags: () => Promise.resolve(),
-        getExpiration: () => Promise.resolve(0),
-        updateTags: () => Promise.resolve(),
-        revalidateTag: () => Promise.resolve(),
-    }
+  if (!isProductionBuild()) {
+    try {
+      // Create a Redis client.
+      redisClient = createClient({
+        url: process.env.REDIS_URL ?? "redis://localhost:6379",
+      });
 
-    constructor() {
-    }
-    async ensureCacheHandler() {
-        if (!currCacheHandler) {
-            if (!isProductionBuild() && process.env.REDIS_URL) {
-                const RedisHandler = await loadRedisHandler();
-                currCacheHandler = new RedisHandler({});
-            } else {
-                currCacheHandler = this.nullCacheHandler;
-            }
+      // Redis won't work without error handling. https://github.com/redis/node-redis?tab=readme-ov-file#events
+      redisClient.on("error", (error) => {
+        if (typeof process.env.NEXT_PRIVATE_DEBUG_CACHE !== "undefined") {
+          // Use logging with caution in production. Redis will flood your logs. Hide it behind a flag.
+          console.error("Redis client error:", error);
         }
-        return currCacheHandler;
+      });
+    } catch (error) {
+      console.warn("Failed to create Redis client:", error);
     }
+  }
 
-    async get(...args) {
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.get(...args);
-        }
-        return undefined;
+  if (redisClient) {
+    try {
+      console.info("Connecting Redis client...");
+
+      // Wait for the client to connect.
+      // Caveat: This will block the server from starting until the client is connected.
+      // And there is no timeout. Make your own timeout if needed.
+      await redisClient.connect();
+      console.info("Redis client connected.");
+    } catch (error) {
+      console.warn("Failed to connect Redis client:", error);
+
+      console.warn("Disconnecting the Redis client...");
+      // Try to disconnect the client to stop it from reconnecting.
+      redisClient
+        .disconnect()
+        .then(() => {
+          console.info("Redis client disconnected.");
+        })
+        .catch(() => {
+          console.warn("Failed to quit the Redis client after failing to connect.");
+        });
     }
+  }
 
-    async set(...args) {
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.set(...args);
-        }
-        return;
-    }
+  /** @type {import("@neshca/cache-handler").Handler | null} */
+  let handler;
 
-    async refreshTags(...args) {
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.refreshTags(...args);
-        }
-        return;
-    }
+  if (redisClient?.isReady) {
+    // Create the `redis-stack` Handler if the client is available and connected.
+    handler = await createRedisHandler({
+      client: redisClient,
+      keyPrefix: "prefix:",
+      timeoutMs: 1000,
+    });
+  } else {
+    // Fallback to LRU handler if Redis client is not available.
+    // The application will still work, but the cache will be in memory only and not shared.
+    handler = createLruHandler();
+    console.warn("Falling back to LRU handler because Redis client is not available.");
+  }
 
-    async revalidateTag(...args) {
-        console.log('ChacheHandlerManager revalidateTag called with args: '+ JSON.stringify(args));
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.revalidateTag(...args);
-        }
-        return 0;
-    }
+  return {
+    handlers: [handler],
+  };
+});
 
-    async getExpiration(...args) {
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.getExpiration(...args);
-        }
-        return 0;
-    }
-
-    async updateTags(...args) {
-        const handler = await this.ensureCacheHandler();
-        if (handler) {
-            return handler.updateTags(...args);
-        }
-        return;
-    }
-}
-
-
-export default ChacheHandlerManager;
+export default CacheHandler;
