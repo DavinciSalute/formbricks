@@ -42,50 +42,50 @@ class ChacheHandlerManager {
         return currCacheHandler;
     }
 
-    async get(key) {
+    async get(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.get(key);
+            return handler.get(...args);
         }
         return undefined;
     }
 
-    async set(key, value) {
+    async set(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.set(key, value);
+            return handler.set(...args);
         }
         return;
     }
 
-    async refreshTags(tags) {
+    async refreshTags(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.refreshTags(tags);
+            return handler.refreshTags(...args);
         }
         return;
     }
 
-    async revalidateTag(tags) {
+    async revalidateTag(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.revalidateTag(tags);
+            return handler.revalidateTag(...args);
         }
         return 0;
     }
 
-    async getExpiration(key) {
+    async getExpiration(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.getExpiration(key);
+            return handler.getExpiration(...args);
         }
         return 0;
     }
 
-    async updateTags(key, tags) {
+    async updateTags(...args) {
         const handler = await this.ensureCacheHandler();
         if (handler) {
-            return handler.updateTags(key, tags);
+            return handler.updateTags(...args);
         }
         return;
     }
