@@ -1,8 +1,7 @@
 // Import dinamico per evitare che Redis si connetta durante la build
 // La libreria @trieb.work/nextjs-turbo-redis-cache esegue codice a livello di modulo
 // che crea un singleton RedisCacheComponentsHandler che si connette a Redis
-// anche se non viene usato. Usando import dinamico, evitiamo questo comportamento.
-// import DefaultCacheHandler from 'next/dist/server/lib/cache-handlers/default.js';
+// anche se non viene usato.
 
 let currCacheHandler;
 let RedisStringsHandler = null; // Sarà caricato dinamicamente solo quando necessario
