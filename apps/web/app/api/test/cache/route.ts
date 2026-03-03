@@ -36,11 +36,23 @@ export const POST = async (request: NextRequest) => {
       // Invalida il tag per forzare la rigenerazione del valore
       revalidateTag(CACHE_TAG);
 
-      // Fa redirect a se stesso con il flag invalidated=true
-      const url = request.nextUrl.clone();
-      url.searchParams.set("invalidated", "true");
+      // Costruisce l'URL originale usando gli header del proxy
+      const forwardedHost = request.headers.get("x-forwarded-host");
+      const forwardedProto = request.headers.get("x-forwarded-proto");
+      const host = forwardedHost || request.headers.get("host") || "localhost";
+      const proto = forwardedProto || (request.url.startsWith("https") ? "https" : "http");
 
-      return NextResponse.redirect(url, { status: 307 });
+      // Costruisce l'URL completo preservando il path originale
+      const originalUrl = new URL(request.url);
+      const redirectUrl = new URL(`${proto}://${host}${originalUrl.pathname}`);
+      // Copia i parametri di query esistenti
+      originalUrl.searchParams.forEach((value, key) => {
+        redirectUrl.searchParams.set(key, value);
+      });
+      // Aggiunge il flag invalidated
+      redirectUrl.searchParams.set("invalidated", "true");
+
+      return NextResponse.redirect(redirectUrl, { status: 307 });
     }
 
     // Se il flag è presente, genera e restituisce il nuovo valore dalla cache
