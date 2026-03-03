@@ -18,7 +18,8 @@ const getHostname = (url) => {
 };
 
 const nextConfig = {
-  cacheHandler: require.resolve("./cache-handler.mjs"),
+  // cacheHandler: require.resolve("./cache-handler.mjs"),
+  cacheHandler: require.resolve("./nesha-cache-handler.mjs"),
   assetPrefix: process.env.ASSET_PREFIX_URL || undefined,
   output: "standalone",
   serverExternalPackages: [

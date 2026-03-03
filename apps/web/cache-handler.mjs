@@ -26,6 +26,7 @@ class ChacheHandlerManager {
         refreshTags: () => Promise.resolve(),
         getExpiration: () => Promise.resolve(0),
         updateTags: () => Promise.resolve(),
+        revalidateTag: () => Promise.resolve(),
     }
 
     constructor() {
