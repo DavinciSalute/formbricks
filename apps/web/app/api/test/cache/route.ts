@@ -29,7 +29,7 @@ const getCachedValue = cache(
 export const POST = async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
-    const invalidated = searchParams.get("invalidated");
+    const invalidated = searchParams.get("invalidated") === "true";
 
     // Se il flag invalidated non è presente, invalida la cache e fa redirect
     if (!invalidated) {
