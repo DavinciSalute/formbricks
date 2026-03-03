@@ -67,6 +67,7 @@ class ChacheHandlerManager {
     }
 
     async revalidateTag(...args) {
+        console.log('ChacheHandlerManager revalidateTag called with args: '+ JSON.stringify(args));
         const handler = await this.ensureCacheHandler();
         if (handler) {
             return handler.revalidateTag(...args);
