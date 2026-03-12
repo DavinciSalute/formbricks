@@ -66,6 +66,16 @@ spec:
                   key: {{ .Values.formbricks.moleculerMicroservice.clientSecret.existingSecret.key }}
             - name: MOLECULER_TRANSPORTER
               value: "{{ .Values.formbricks.moleculerMicroservice.transporter }}"
+            {{- if eq (include "formbricks.redis.enabled" .) "true" }}
+            - name: REDIS_URL
+              value: "redis://{{ include "formbricks.fullname" . }}-redis:{{ .Values.redis.service.port }}"
+            {{- end }}
+            {{- if .Values.formbricks.debugCacheHandler }}
+            - name: DEBUG_CACHE_HANDLER
+              value: "{{ .Values.formbricks.debugCacheHandler }}"
+            - name: NEXT_PRIVATE_DEBUG_CACHE
+              value: "{{ .Values.formbricks.debugCacheHandler }}"
+            {{- end }}
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:

@@ -273,6 +273,23 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+redis:
+  enabled: false  # Auto-enabled when replicaCount > 1 or autoscaling.enabled == true
+  image:
+    repository: redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 6379
+
 nodeSelector: {}
 
 tolerations: []

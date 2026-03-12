@@ -91,3 +91,18 @@ Add volumes
     secretName: cloudsql-sa
 {{- end }}
 {{- end }}
+
+{{/*
+Determine if Redis should be enabled
+Redis is enabled when:
+- Explicitly enabled via redis.enabled = true, OR
+- replicaCount > 1, OR
+- autoscaling.enabled = true
+*/}}
+{{- define "formbricks.redis.enabled" -}}
+{{- if or .Values.redis.enabled (gt (.Values.replicaCount | int) 1) .Values.autoscaling.enabled -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
