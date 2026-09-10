@@ -5,7 +5,6 @@
 cloudsql:
   enable: true
   instances: 'common-project-bd8c:europe-west8:postgres-production=tcp:5432'
-  credentials: 'pippolo'
 
 # see: https://formbricks.com/docs/self-hosting/docker#important-run-time-variables
 formbricks: 
