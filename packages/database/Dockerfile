@@ -1,4 +1,4 @@
-FROM node:22.23.4-alpine3.24 AS base
+FROM node:22.23.4-alpine3.23 AS base
 
 #
 ## step 1: Prune monorepo
