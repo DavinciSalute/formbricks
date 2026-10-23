@@ -65,5 +65,10 @@
   "dependencies": {
     "@changesets/cli": "^2.27.3",
     "playwright": "^1.44.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "napi-build-utils": "^2.0.0"
+    }
   }
 }
