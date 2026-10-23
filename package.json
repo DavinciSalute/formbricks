@@ -53,7 +53,7 @@
     ]
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=22.23.4"
   },
   "packageManager": "pnpm@9.2.0",
   "nextBundleAnalysis": {
@@ -65,5 +65,10 @@
   "dependencies": {
     "@changesets/cli": "^2.27.3",
     "playwright": "^1.44.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "napi-build-utils": "^2.0.0"
+    }
   }
 }

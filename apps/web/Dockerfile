@@ -1,4 +1,8 @@
-FROM node:20-alpine3.20 AS base
+FROM node:22.23.4-alpine3.23 AS base
+
+# Alpine 3.23 ships libssl only in /usr/lib: without the openssl package Prisma
+# cannot detect OpenSSL 3 and falls back to the (missing) openssl-1.1.x engine
+RUN apk add --no-cache openssl
 
 #
 ## step 1: Prune monorepo
