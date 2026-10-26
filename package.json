@@ -53,7 +53,7 @@
     ]
   },
   "engines": {
-    "node": ">=22.23.4"
+    "node": "^22.23.4"
   },
   "packageManager": "pnpm@9.2.0",
   "nextBundleAnalysis": {
@@ -68,7 +68,8 @@
   },
   "pnpm": {
     "overrides": {
-      "napi-build-utils": "^2.0.0"
+      "napi-build-utils": "^2.0.0",
+      "@types/node": "^22"
     }
   }
 }
