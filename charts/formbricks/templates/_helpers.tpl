@@ -74,6 +74,10 @@ Enable cloudsql-proxy container
     - "-credential_file=/secrets/service_account.json"
   securityContext:
     runAsNonRoot: true
+  {{- with .Values.cloudsql.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   volumeMounts:
     - name: cloudsql-sa-volume
       mountPath: /secrets/

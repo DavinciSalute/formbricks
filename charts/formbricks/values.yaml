@@ -6,6 +6,15 @@ cloudsql:
   enable: true
   instances: 'common-project-bd8c:europe-west8:postgres-production=tcp:5432'
   credentials: 'pippolo'
+  # Without requests on the sidecar the HPA cannot compute CPU utilization
+  # ("missing request for cpu") and never scales. The proxy uses ~1m CPU and
+  # ~12Mi memory in production.
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
 
 # see: https://formbricks.com/docs/self-hosting/docker#important-run-time-variables
 formbricks: 
