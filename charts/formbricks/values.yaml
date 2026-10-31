@@ -288,13 +288,15 @@ redis:
     repository: redis
     tag: "7-alpine"
     pullPolicy: IfNotPresent
-  resources: {}
-    # limits:
-    #   cpu: 200m
-    #   memory: 256Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+  # The app Deployment selector (name + instance) also matches the redis pod,
+  # so the HPA counts it too: without requests here it fails with "missing
+  # request for cpu" and never scales. Redis uses ~10m CPU and ~11Mi memory.
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 256Mi
   service:
     type: ClusterIP
     port: 6379
