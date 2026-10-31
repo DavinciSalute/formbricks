@@ -28,7 +28,8 @@ export const Modal = ({
 }: ModalProps) => {
   const [show, setShow] = useState(true);
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // null during server rendering, where window does not exist: the real width is set on mount
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(true);
 
   const calculateScaling = () => {
@@ -37,7 +38,7 @@ export const Modal = ({
     if (previewMode === "mobile") {
       scaleValue = "1";
     } else {
-      if (windowWidth > 1600) {
+      if (windowWidth === null || windowWidth > 1600) {
         scaleValue = "1";
       } else if (windowWidth > 1200) {
         scaleValue = ".9";
@@ -71,6 +72,7 @@ export const Modal = ({
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
