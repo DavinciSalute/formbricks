@@ -73,7 +73,6 @@ Enable cloudsql-proxy container
     - "-instances={{ .Values.cloudsql.instances }}"
   securityContext:
     runAsNonRoot: true
-<<<<<<< HEAD
   {{- with .Values.cloudsql.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -82,8 +81,6 @@ Enable cloudsql-proxy container
     - name: cloudsql-sa-volume
       mountPath: /secrets/
       readOnly: true
-=======
->>>>>>> f6a8c57af (feat: migrate from credential file to workload identity authentication)
 {{- end }}
 {{- end }}
 
