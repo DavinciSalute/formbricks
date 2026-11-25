@@ -71,7 +71,6 @@ Enable cloudsql-proxy container
   command:
     - "/cloud_sql_proxy"
     - "-instances={{ .Values.cloudsql.instances }}"
-    - "-credential_file=/secrets/service_account.json"
   securityContext:
     runAsNonRoot: true
   {{- with .Values.cloudsql.resources }}
